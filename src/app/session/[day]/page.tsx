@@ -161,9 +161,23 @@ export default function SessionPage({ params }: { params: Promise<{ day: string 
                     </button>
 
                     <div style={{ flex: 1 }}>
-                      <h4 style={{ fontSize: '16px', fontFamily: 'Inter, sans-serif', fontWeight: 600, color: isDone ? '#68dba9' : '#dee4de', textDecoration: isDone ? 'line-through' : 'none', marginBottom: '6px' }}>
-                        {exercise.name}
-                      </h4>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '6px' }}>
+                        <h4 style={{ fontSize: '16px', fontFamily: 'Inter, sans-serif', fontWeight: 600, color: isDone ? '#68dba9' : '#dee4de', textDecoration: isDone ? 'line-through' : 'none', flex: 1, marginRight: '8px' }}>
+                          {exercise.name}
+                        </h4>
+                        {exercise.url && (
+                          <a href={exercise.url} target="_blank" rel="noopener noreferrer" style={{
+                            display: 'flex', alignItems: 'center', gap: '4px',
+                            background: '#1a0000', border: '1px solid rgba(255,0,0,0.3)',
+                            color: '#ff4444', borderRadius: '6px', padding: '4px 8px',
+                            fontSize: '11px', fontFamily: 'Geist, sans-serif', fontWeight: 700,
+                            textDecoration: 'none', flexShrink: 0, letterSpacing: '0.03em',
+                          }}>
+                            <span className="material-symbols-outlined" style={{ fontSize: '13px' }}>play_circle</span>
+                            Watch
+                          </a>
+                        )}
+                      </div>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', fontSize: '13px', color: isDone ? 'rgba(188,202,192,0.6)' : '#bccac0' }}>
                         <span>{exercise.sets} Sets</span>
                         <span>{exercise.reps}</span>
