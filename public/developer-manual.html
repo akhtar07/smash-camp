@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SMASH CAMP — Developer Manual</title>
+<style>
+  :root {
+    --bg: #0f1511;
+    --surface: #1b211d;
+    --border: #3d4a42;
+    --text: #dee4de;
+    --muted: #87948b;
+    --accent: #25a475;
+    --green: #68dba9;
+    --blue: #adc6ff;
+    --yellow: #ffd700;
+    --red: #ffb77c;
+    --purple: #d4a8ff;
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    padding: 0 20px 60px;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  /* ── Typography ── */
+  h1, h2, h3, h4 {
+    font-family: 'Geist', system-ui, sans-serif;
+    color: var(--text);
+    line-height: 1.2;
+  }
+  h1 { font-size: 42px; font-weight: 800; letter-spacing: -0.04em; }
+  h2 { font-size: 26px; font-weight: 700; margin: 48px 0 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 18px; font-weight: 700; margin: 28px 0 10px; color: var(--green); }
+  h4 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  p { margin: 10px 0; color: #bccac0; }
+  a { color: var(--green); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  ul, ol { margin: 10px 0 10px 20px; color: #bccac0; }
+  li { margin: 5px 0; }
+  strong { color: var(--text); }
+
+  /* ── Code ── */
+  code {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    background: #252b28;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 6px;
+    color: var(--green);
+  }
+  pre {
+    background: #141a16;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    overflow-x: auto;
+    margin: 14px 0;
+    position: relative;
+  }
+  pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 13px;
+    color: #c9d8ce;
+    line-height: 1.65;
+  }
+  .kw  { color: #adc6ff; }   /* keywords */
+  .ty  { color: #d4a8ff; }   /* types */
+  .st  { color: #a8d8a0; }   /* strings */
+  .cm  { color: #5a6e60; }   /* comments */
+  .fn  { color: #68dba9; }   /* function names */
+  .nm  { color: #ffb77c; }   /* numbers */
+
+  /* ── Callout boxes ── */
+  .callout {
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin: 16px 0;
+    border-left: 3px solid;
+  }
+  .callout.info    { background: rgba(173,198,255,0.07); border-color: var(--blue); }
+  .callout.warn    { background: rgba(255,215,0,0.07);   border-color: var(--yellow); }
+  .callout.danger  { background: rgba(255,180,171,0.07); border-color: #ffb4ab; }
+  .callout.tip     { background: rgba(104,219,169,0.07); border-color: var(--green); }
+  .callout p       { margin: 4px 0; }
+  .callout-title   { font-family: 'Geist', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 6px; }
+  .callout.info  .callout-title { color: var(--blue); }
+  .callout.warn  .callout-title { color: var(--yellow); }
+  .callout.danger .callout-title { color: #ffb4ab; }
+  .callout.tip   .callout-title { color: var(--green); }
+
+  /* ── Table ── */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; }
+  th { text-align: left; padding: 10px 14px; background: var(--surface); color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+  td { padding: 10px 14px; border-bottom: 1px solid #252b28; color: #bccac0; font-size: 14px; }
+  tr:last-child td { border-bottom: none; }
+  table { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+
+  /* ── Pill/badge ── */
+  .badge {
+    display: inline-block;
+    font-size: 11px; font-family: 'Geist', sans-serif; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 3px 9px; border-radius: 100px;
+    border: 1px solid;
+  }
+  .badge.green  { color: var(--green);  border-color: rgba(104,219,169,0.3); background: rgba(104,219,169,0.08); }
+  .badge.blue   { color: var(--blue);   border-color: rgba(173,198,255,0.3); background: rgba(173,198,255,0.08); }
+  .badge.yellow { color: var(--yellow); border-color: rgba(255,215,0,0.3);   background: rgba(255,215,0,0.08); }
+  .badge.red    { color: var(--red);    border-color: rgba(255,183,124,0.3); background: rgba(255,183,124,0.08); }
+  .badge.purple { color: var(--purple); border-color: rgba(212,168,255,0.3); background: rgba(212,168,255,0.08); }
+
+  /* ── Steps ── */
+  .steps { counter-reset: step; list-style: none; margin-left: 0; }
+  .steps li {
+    counter-increment: step;
+    position: relative;
+    padding-left: 44px;
+    margin-bottom: 18px;
+  }
+  .steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0; top: 0;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: rgba(37,164,117,0.15);
+    border: 1px solid rgba(37,164,117,0.4);
+    color: var(--accent);
+    font-size: 12px; font-weight: 700; font-family: 'Geist', sans-serif;
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1;
+  }
+
+  /* ── Cover / hero ── */
+  .hero {
+    text-align: center;
+    padding: 60px 0 40px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 8px;
+  }
+  .hero .chip {
+    display: inline-block;
+    font-size: 11px; font-family: 'Geist', sans-serif; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent); background: rgba(37,164,117,0.1);
+    border: 1px solid rgba(37,164,117,0.25);
+    padding: 5px 14px; border-radius: 100px;
+    margin-bottom: 20px;
+  }
+  .hero h1 { margin-bottom: 12px; }
+  .hero p { font-size: 16px; color: var(--muted); max-width: 520px; margin: 0 auto; }
+
+  /* ── TOC ── */
+  .toc {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 24px 28px; margin: 32px 0;
+  }
+  .toc h4 { color: var(--muted); margin-top: 0; margin-bottom: 14px; }
+  .toc ol { margin: 0 0 0 16px; }
+  .toc li { margin: 6px 0; font-size: 14px; }
+  .toc a { color: var(--text); }
+
+  /* ── File tree ── */
+  .file-tree {
+    background: #141a16; border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px; font-family: 'Courier New', monospace;
+    font-size: 13px; color: #bccac0; line-height: 1.9; overflow-x: auto;
+  }
+  .file-tree .dir  { color: var(--blue); }
+  .file-tree .file { color: #bccac0; }
+  .file-tree .new  { color: var(--green); }
+
+  /* ── Schema table column colors ── */
+  .col-type { color: var(--purple); font-family: monospace; font-size: 12px; }
+  .col-pk   { color: var(--yellow); font-weight: 700; }
+
+  /* ── Print ── */
+  @media print {
+    body { background: #fff; color: #1a1a1a; max-width: 100%; padding: 0; }
+    h1, h2, h3, h4 { color: #1a1a1a !important; }
+    p, li, td, .callout p { color: #333 !important; }
+    code { background: #f0f0f0; color: #333; border-color: #ccc; }
+    pre { background: #f8f8f8; border-color: #ddd; }
+    pre code { color: #222; }
+    .kw { color: #1e40af; }
+    .st { color: #166534; }
+    .cm { color: #9ca3af; }
+    .fn { color: #065f46; }
+    .nm { color: #92400e; }
+    .ty { color: #7c3aed; }
+    .badge.green  { color: #065f46; background: #d1fae5; border-color: #6ee7b7; }
+    .badge.blue   { color: #1e40af; background: #dbeafe; border-color: #93c5fd; }
+    .badge.yellow { color: #92400e; background: #fef3c7; border-color: #fcd34d; }
+    .callout      { background: #f9fafb !important; border-left: 3px solid #9ca3af; }
+    .callout.info  .callout-title { color: #1e40af; }
+    .callout.warn  .callout-title { color: #92400e; }
+    .callout.danger .callout-title { color: #991b1b; }
+    .callout.tip   .callout-title { color: #065f46; }
+    table { border-color: #e5e7eb; }
+    th { background: #f3f4f6 !important; color: #6b7280 !important; }
+    td { border-color: #f3f4f6; }
+    .toc, .file-tree { background: #f9fafb; border-color: #e5e7eb; }
+    .file-tree .dir  { color: #1e40af; }
+    .file-tree .file { color: #374151; }
+    .file-tree .new  { color: #065f46; }
+    h2 { page-break-before: always; border-bottom-color: #e5e7eb; }
+    h2:first-of-type { page-break-before: avoid; }
+    .hero { border-bottom-color: #e5e7eb; }
+    a { color: #065f46; }
+    .hero .chip { background: #d1fae5; color: #065f46; border-color: #6ee7b7; }
+    .steps li::before { background: #d1fae5; border-color: #34d399; color: #065f46; }
+  }
+
+  @import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap');
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ HERO ═══════════════════════ -->
+<div class="hero">
+  <div class="chip">Developer Manual</div>
+  <h1>SMASH CAMP</h1>
+  <p>A complete from-scratch guide to building a real-time badminton training tracker with Next.js, Supabase, and Vercel.</p>
+  <p style="margin-top:10px; font-size:13px; color: #5a6e60;">Covers every file, every decision, and every gotcha.</p>
+</div>
+
+<!-- ═══════════════════════ TOC ═══════════════════════ -->
+<div class="toc">
+  <h4>Table of Contents</h4>
+  <ol>
+    <li><a href="#s1">What We're Building</a></li>
+    <li><a href="#s2">Tech Stack Overview</a></li>
+    <li><a href="#s3">Prerequisites & Tools</a></li>
+    <li><a href="#s4">Create the Next.js Project</a></li>
+    <li><a href="#s5">Supabase Setup (Database + Auth)</a></li>
+    <li><a href="#s6">Environment Variables</a></li>
+    <li><a href="#s7">Project File Structure</a></li>
+    <li><a href="#s8">Core Library Files</a></li>
+    <li><a href="#s9">Root Layout & Global Styles</a></li>
+    <li><a href="#s10">Login / Signup Page</a></li>
+    <li><a href="#s11">Player Dashboard</a></li>
+    <li><a href="#s12">Coach Dashboard</a></li>
+    <li><a href="#s13">Training Program Page</a></li>
+    <li><a href="#s14">Daily Session Page (Dynamic Route)</a></li>
+    <li><a href="#s15">Squad Page</a></li>
+    <li><a href="#s16">Nutrition Tracker Page</a></li>
+    <li><a href="#s17">Leaderboard Page</a></li>
+    <li><a href="#s18">Shared Components</a></li>
+    <li><a href="#s19">Deploy to Vercel</a></li>
+    <li><a href="#s20">Common Gotchas & Fixes</a></li>
+    <li><a href="#s21">Extending the App</a></li>
+  </ol>
+</div>
+
+<!-- ═══════════════════════ SECTION 1 ═══════════════════════ -->
+<h2 id="s1">1. What We're Building</h2>
+
+<p>SMASH CAMP is a full-stack mobile web app for managing a 45-day elite badminton summer camp. It has two roles:</p>
+
+<table>
+  <thead><tr><th>Role</th><th>What they can do</th></tr></thead>
+  <tbody>
+    <tr><td><span class="badge green">Player</span></td><td>Mark daily attendance, follow structured training sessions, track nutrition, view personal stats and the leaderboard</td></tr>
+    <tr><td><span class="badge yellow">Coach</span></td><td>See live attendance roll call, squad roster, per-player completion stats, full leaderboard</td></tr>
+  </tbody>
+</table>
+
+<h4>Key Features</h4>
+<ul>
+  <li>Email/password auth with Supabase — no email confirmation needed</li>
+  <li>Role-based routing: coaches go to <code>/coach</code>, players go to <code>/player</code></li>
+  <li>Coach code at signup to gate coach access (<code>SMASHCOACH2025</code>)</li>
+  <li>45-day training program with phases: Foundation, Build, Peak, Taper</li>
+  <li>YouTube watch buttons on every exercise</li>
+  <li>Attendance streak tracking</li>
+  <li>Nutrition log with 6 meals + hydration tracker</li>
+  <li>Live leaderboard: score = 50% attendance + 50% session completion</li>
+  <li>Fully responsive, mobile-first design — max-width 448px</li>
+  <li>All inline styles, no Tailwind (intentional for portability)</li>
+</ul>
+
+<!-- ═══════════════════════ SECTION 2 ═══════════════════════ -->
+<h2 id="s2">2. Tech Stack Overview</h2>
+
+<table>
+  <thead><tr><th>Layer</th><th>Tool</th><th>Why</th></tr></thead>
+  <tbody>
+    <tr><td>Framework</td><td><strong>Next.js 15 (App Router)</strong></td><td>React server/client components, file-based routing, zero-config TypeScript</td></tr>
+    <tr><td>Language</td><td><strong>TypeScript</strong></td><td>Type safety across components and database types</td></tr>
+    <tr><td>Database + Auth</td><td><strong>Supabase</strong></td><td>Postgres + Row Level Security + Auth in one free tier service</td></tr>
+    <tr><td>Hosting</td><td><strong>Vercel</strong></td><td>Zero-config deploys from GitHub, free tier, auto HTTPS</td></tr>
+    <tr><td>Icons</td><td><strong>Material Symbols Outlined</strong></td><td>Variable font icons — one import, infinite icons, fill/weight control</td></tr>
+    <tr><td>Fonts</td><td><strong>Geist + Inter</strong></td><td>Geist for headings/labels (tight, techy), Inter for body text</td></tr>
+    <tr><td>Styling</td><td><strong>Inline styles</strong></td><td>No build step, easy to read, no class name conflicts</td></tr>
+  </tbody>
+</table>
+
+<div class="callout info">
+  <div class="callout-title">Why no Tailwind?</div>
+  <p>Tailwind is great for teams but adds a learning curve. With inline styles you can read exactly what's styled without looking up class names. The trade-off is more verbose JSX — acceptable for a focused app like this.</p>
+</div>
+
+<!-- ═══════════════════════ SECTION 3 ═══════════════════════ -->
+<h2 id="s3">3. Prerequisites & Tools</h2>
+
+<p>You need the following installed before you start:</p>
+
+<ul class="steps">
+  <li><strong>Node.js 18+</strong> — download from <a href="https://nodejs.org">nodejs.org</a>. Run <code>node -v</code> to verify.</li>
+  <li><strong>npm 9+</strong> (comes with Node). Run <code>npm -v</code> to verify.</li>
+  <li><strong>Git</strong> — for version control and Vercel integration. Run <code>git --version</code>.</li>
+  <li><strong>A Supabase account</strong> — free at <a href="https://supabase.com">supabase.com</a>. No credit card needed.</li>
+  <li><strong>A Vercel account</strong> — free at <a href="https://vercel.com">vercel.com</a>. Sign in with GitHub.</li>
+  <li><strong>A GitHub account</strong> — free. Vercel auto-deploys from GitHub on every push.</li>
+  <li><strong>A code editor</strong> — VS Code is recommended.</li>
+</ul>
+
+<div class="callout tip">
+  <div class="callout-title">No local database needed</div>
+  <p>Supabase is fully hosted. You don't need PostgreSQL installed locally. You'll connect to the cloud database from day one.</p>
+</div>
+
+<!-- ═══════════════════════ SECTION 4 ═══════════════════════ -->
+<h2 id="s4">4. Create the Next.js Project</h2>
+
+<p>Open your terminal and run:</p>
+
+<pre><code>npx create-next-app@latest smash-camp</code></pre>
+
+<p>When prompted, answer like this:</p>
+
+<pre><code>✔ Would you like to use TypeScript?            › <span class="st">Yes</span>
+✔ Would you like to use ESLint?                › <span class="st">Yes</span>
+✔ Would you like to use Tailwind CSS?          › <span class="st">No</span>
+✔ Would you like to use `src/` directory?      › <span class="st">Yes</span>
+✔ Would you like to use App Router?            › <span class="st">Yes</span>
+✔ Would you like to customize the default import alias? › <span class="st">No</span></code></pre>
+
+<p>Then move into the directory and install Supabase:</p>
+
+<pre><code>cd smash-camp
+npm install @supabase/supabase-js</code></pre>
+
+<p>Start the dev server to confirm it works:</p>
+
+<pre><code>npm run dev</code></pre>
+
+<p>Visit <code>http://localhost:3000</code> — you should see the default Next.js welcome page. If you do, the project is ready.</p>
+
+<div class="callout warn">
+  <div class="callout-title">Delete the default files</div>
+  <p>Before building, delete <code>src/app/page.tsx</code> content and replace it with your own login page. Delete <code>src/app/globals.css</code> content too (or keep just the bare minimum reset styles).</p>
+</div>
+
+<!-- ═══════════════════════ SECTION 5 ═══════════════════════ -->
+<h2 id="s5">5. Supabase Setup (Database + Auth)</h2>
+
+<h3>5.1 Create a Project</h3>
+<ol class="steps">
+  <li>Go to <a href="https://supabase.com">supabase.com</a> → Sign in → click <strong>New Project</strong></li>
+  <li>Give it a name: <code>smash-camp</code></li>
+  <li>Set a database password (save it somewhere safe)</li>
+  <li>Choose a region close to your users (e.g., Asia South for India)</li>
+  <li>Wait ~2 minutes for provisioning</li>
+</ol>
+
+<h3>5.2 Disable Email Confirmation</h3>
+
+<div class="callout danger">
+  <div class="callout-title">Do this before your first user signs up</div>
+  <p>By default Supabase requires email confirmation. This blocks players from logging in immediately. You must disable it for a camp app where players sign up on the spot.</p>
+</div>
+
+<ol class="steps">
+  <li>In your Supabase dashboard → <strong>Authentication</strong> (left sidebar)</li>
+  <li>Click <strong>Sign In / Up</strong> (under Providers)</li>
+  <li>Find <strong>Confirm Email</strong> toggle → switch it <strong>OFF</strong></li>
+  <li>Click Save</li>
+</ol>
+
+<h3>5.3 Create the Database Tables</h3>
+
+<p>Go to <strong>SQL Editor</strong> in your Supabase dashboard and run this entire script:</p>
+
+<pre><code><span class="cm">-- Table 1: players (stores all users, both players and coaches)</span>
+<span class="kw">CREATE TABLE</span> players (
+  id         <span class="ty">UUID</span> <span class="kw">PRIMARY KEY</span> <span class="kw">REFERENCES</span> auth.users(id) <span class="kw">ON DELETE CASCADE</span>,
+  name       <span class="ty">TEXT</span>    <span class="kw">NOT NULL</span>,
+  email      <span class="ty">TEXT</span>    <span class="kw">NOT NULL</span>,
+  is_coach   <span class="ty">BOOLEAN</span> <span class="kw">DEFAULT FALSE</span>
+);
+
+<span class="cm">-- Table 2: attendance (one row per player per day they attend)</span>
+<span class="kw">CREATE TABLE</span> attendance (
+  id         <span class="ty">UUID</span>    <span class="kw">DEFAULT</span> gen_random_uuid() <span class="kw">PRIMARY KEY</span>,
+  player_id  <span class="ty">UUID</span>    <span class="kw">REFERENCES</span> players(id) <span class="kw">ON DELETE CASCADE</span>,
+  date       <span class="ty">DATE</span>    <span class="kw">NOT NULL</span>,
+  present    <span class="ty">BOOLEAN</span> <span class="kw">DEFAULT TRUE</span>,
+  <span class="kw">UNIQUE</span>(player_id, date)
+);
+
+<span class="cm">-- Table 3: daily_sessions (tracks per-player session completion %)</span>
+<span class="kw">CREATE TABLE</span> daily_sessions (
+  id                 <span class="ty">UUID</span>    <span class="kw">DEFAULT</span> gen_random_uuid() <span class="kw">PRIMARY KEY</span>,
+  player_id          <span class="ty">UUID</span>    <span class="kw">REFERENCES</span> players(id) <span class="kw">ON DELETE CASCADE</span>,
+  day_number         <span class="ty">INTEGER</span> <span class="kw">NOT NULL</span>,
+  completion_percent <span class="ty">INTEGER</span> <span class="kw">DEFAULT</span> 0,
+  date               <span class="ty">DATE</span>    <span class="kw">NOT NULL</span>,
+  <span class="kw">UNIQUE</span>(player_id, day_number)
+);
+
+<span class="cm">-- Table 4: exercise_completions (tracks individual exercise checkboxes)</span>
+<span class="kw">CREATE TABLE</span> exercise_completions (
+  id             <span class="ty">UUID</span>    <span class="kw">DEFAULT</span> gen_random_uuid() <span class="kw">PRIMARY KEY</span>,
+  player_id      <span class="ty">UUID</span>    <span class="kw">REFERENCES</span> players(id) <span class="kw">ON DELETE CASCADE</span>,
+  day_number     <span class="ty">INTEGER</span> <span class="kw">NOT NULL</span>,
+  exercise_name  <span class="ty">TEXT</span>    <span class="kw">NOT NULL</span>,
+  block_type     <span class="ty">TEXT</span>    <span class="kw">NOT NULL</span>,
+  completed      <span class="ty">BOOLEAN</span> <span class="kw">DEFAULT FALSE</span>,
+  date           <span class="ty">DATE</span>    <span class="kw">NOT NULL</span>,
+  <span class="kw">UNIQUE</span>(player_id, day_number, exercise_name)
+);
+
+<span class="cm">-- Table 5: nutrition_logs (meals and hydration)</span>
+<span class="kw">CREATE TABLE</span> nutrition_logs (
+  id         <span class="ty">UUID</span>    <span class="kw">DEFAULT</span> gen_random_uuid() <span class="kw">PRIMARY KEY</span>,
+  player_id  <span class="ty">UUID</span>    <span class="kw">REFERENCES</span> players(id) <span class="kw">ON DELETE CASCADE</span>,
+  date       <span class="ty">DATE</span>    <span class="kw">NOT NULL</span>,
+  meal_name  <span class="ty">TEXT</span>    <span class="kw">NOT NULL</span>,
+  logged     <span class="ty">BOOLEAN</span> <span class="kw">DEFAULT FALSE</span>,
+  <span class="kw">UNIQUE</span>(player_id, date, meal_name)
+);
+</code></pre>
+
+<h3>5.4 Set Row Level Security (RLS)</h3>
+
+<p>RLS ensures players can only see their own data. Run this in SQL Editor:</p>
+
+<pre><code><span class="cm">-- Enable RLS on all tables</span>
+<span class="kw">ALTER TABLE</span> players              <span class="kw">ENABLE ROW LEVEL SECURITY</span>;
+<span class="kw">ALTER TABLE</span> attendance           <span class="kw">ENABLE ROW LEVEL SECURITY</span>;
+<span class="kw">ALTER TABLE</span> daily_sessions       <span class="kw">ENABLE ROW LEVEL SECURITY</span>;
+<span class="kw">ALTER TABLE</span> exercise_completions <span class="kw">ENABLE ROW LEVEL SECURITY</span>;
+<span class="kw">ALTER TABLE</span> nutrition_logs       <span class="kw">ENABLE ROW LEVEL SECURITY</span>;
+
+<span class="cm">-- Players can read all player rows (needed for leaderboard, squad)</span>
+<span class="kw">CREATE POLICY</span> "read all players"
+  <span class="kw">ON</span> players <span class="kw">FOR SELECT TO</span> authenticated
+  <span class="kw">USING</span> (true);
+
+<span class="cm">-- Players can insert/update their own row</span>
+<span class="kw">CREATE POLICY</span> "manage own player"
+  <span class="kw">ON</span> players <span class="kw">FOR ALL TO</span> authenticated
+  <span class="kw">USING</span> (auth.uid() = id) <span class="kw">WITH CHECK</span> (auth.uid() = id);
+
+<span class="cm">-- Attendance: read all (for squad page), write own</span>
+<span class="kw">CREATE POLICY</span> "read all attendance"
+  <span class="kw">ON</span> attendance <span class="kw">FOR SELECT TO</span> authenticated
+  <span class="kw">USING</span> (true);
+
+<span class="kw">CREATE POLICY</span> "manage own attendance"
+  <span class="kw">ON</span> attendance <span class="kw">FOR ALL TO</span> authenticated
+  <span class="kw">USING</span> (auth.uid() = player_id) <span class="kw">WITH CHECK</span> (auth.uid() = player_id);
+
+<span class="cm">-- Sessions: read all (for leaderboard), write own</span>
+<span class="kw">CREATE POLICY</span> "read all sessions"
+  <span class="kw">ON</span> daily_sessions <span class="kw">FOR SELECT TO</span> authenticated
+  <span class="kw">USING</span> (true);
+
+<span class="kw">CREATE POLICY</span> "manage own sessions"
+  <span class="kw">ON</span> daily_sessions <span class="kw">FOR ALL TO</span> authenticated
+  <span class="kw">USING</span> (auth.uid() = player_id) <span class="kw">WITH CHECK</span> (auth.uid() = player_id);
+
+<span class="cm">-- Exercise completions: manage own only</span>
+<span class="kw">CREATE POLICY</span> "manage own completions"
+  <span class="kw">ON</span> exercise_completions <span class="kw">FOR ALL TO</span> authenticated
+  <span class="kw">USING</span> (auth.uid() = player_id) <span class="kw">WITH CHECK</span> (auth.uid() = player_id);
+
+<span class="cm">-- Nutrition: manage own only</span>
+<span class="kw">CREATE POLICY</span> "manage own nutrition"
+  <span class="kw">ON</span> nutrition_logs <span class="kw">FOR ALL TO</span> authenticated
+  <span class="kw">USING</span> (auth.uid() = player_id) <span class="kw">WITH CHECK</span> (auth.uid() = player_id);
+</code></pre>
+
+<h3>5.5 Get Your API Keys</h3>
+
+<p>Go to <strong>Project Settings → API</strong> in Supabase. You need two values:</p>
+
+<table>
+  <thead><tr><th>Key</th><th>Where to find</th><th>Use</th></tr></thead>
+  <tbody>
+    <tr><td><code>NEXT_PUBLIC_SUPABASE_URL</code></td><td>Project URL (top of API page)</td><td>The base URL for all API calls</td></tr>
+    <tr><td><code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code></td><td>Project API keys → anon/public</td><td>Safe to expose in browser; RLS enforces security</td></tr>
+  </tbody>
+</table>
+
+<!-- ═══════════════════════ SECTION 6 ═══════════════════════ -->
+<h2 id="s6">6. Environment Variables</h2>
+
+<p>Create a file called <code>.env.local</code> in the root of your project (same level as <code>package.json</code>):</p>
+
+<pre><code>NEXT_PUBLIC_SUPABASE_URL=https://yourproject.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+NEXT_PUBLIC_COACH_CODE=SMASHCOACH2025</code></pre>
+
+<div class="callout danger">
+  <div class="callout-title">Security Warning</div>
+  <p><strong>Never commit <code>.env.local</code> to Git.</strong> It should be in your <code>.gitignore</code> (Next.js adds it automatically). The coach code is a signup gate — anyone with the code can create a coach account. Keep it private.</p>
+</div>
+
+<div class="callout warn">
+  <div class="callout-title">NEXT_PUBLIC_ prefix</div>
+  <p>Variables prefixed with <code>NEXT_PUBLIC_</code> are exposed to the browser. This is intentional for the Supabase URL and anon key — the anon key is safe to expose because Row Level Security handles authorization. The coach code is also browser-side (checked in the signup form). If you need true server-side secrets, use variables <em>without</em> the prefix.</p>
+</div>
+
+<p>When you deploy to Vercel, you'll add these same variables in the Vercel dashboard (not as a file). Covered in <a href="#s19">Section 19</a>.</p>
+
+<!-- ═══════════════════════ SECTION 7 ═══════════════════════ -->
+<h2 id="s7">7. Project File Structure</h2>
+
+<div class="file-tree">
+<span class="dir">smash-camp/</span>
+├── <span class="dir">.env.local</span>                  ← your secrets (not committed to git)
+├── package.json
+├── tsconfig.json
+├── next.config.ts
+├── <span class="dir">public/</span>
+│   ├── player-manual.html
+│   ├── coach-manual.html
+│   └── developer-manual.html    ← this file
+└── <span class="dir">src/</span>
+    ├── <span class="dir">lib/</span>
+    │   ├── <span class="new">supabase.ts</span>          ← Supabase client + TypeScript types
+    │   └── <span class="new">program.ts</span>          ← All 45 training days data
+    ├── <span class="dir">components/</span>
+    │   └── <span class="new">BottomNav.tsx</span>        ← Shared bottom navigation bar
+    └── <span class="dir">app/</span>
+        ├── globals.css            ← Minimal global reset
+        ├── layout.tsx             ← Root HTML, fonts, metadata
+        ├── page.tsx               ← Login / Signup page (route: /)
+        ├── <span class="dir">player/</span>
+        │   ├── page.tsx           ← Player dashboard (route: /player)
+        │   └── <span class="dir">[id]/</span>
+        │       └── page.tsx       ← View another player (route: /player/[id])
+        ├── <span class="dir">coach/</span>
+        │   └── page.tsx           ← Coach dashboard (route: /coach)
+        ├── <span class="dir">program/</span>
+        │   └── page.tsx           ← 45-day program explorer (route: /program)
+        ├── <span class="dir">session/</span>
+        │   └── <span class="dir">[day]/</span>
+        │       └── page.tsx       ← Daily training session (route: /session/1..45)
+        ├── <span class="dir">squad/</span>
+        │   └── page.tsx           ← Full squad roster (route: /squad)
+        ├── <span class="dir">nutrition/</span>
+        │   └── page.tsx           ← Nutrition tracker (route: /nutrition)
+        ├── <span class="dir">leaderboard/</span>
+        │   └── page.tsx           ← Rankings (route: /leaderboard)
+        └── <span class="dir">calendar/</span>
+            └── page.tsx           ← Coach-only attendance calendar (route: /calendar)
+</div>
+
+<div class="callout info">
+  <div class="callout-title">App Router folder convention</div>
+  <p>Each folder under <code>app/</code> with a <code>page.tsx</code> becomes a URL route automatically. A folder named <code>[day]</code> creates a dynamic segment — <code>/session/1</code>, <code>/session/2</code>, etc. all resolve to the same <code>page.tsx</code>, with <code>params.day</code> containing the value.</p>
+</div>
+
+<!-- ═══════════════════════ SECTION 8 ═══════════════════════ -->
+<h2 id="s8">8. Core Library Files</h2>
+
+<h3>8.1 <code>src/lib/supabase.ts</code> — The Supabase Client</h3>
+
+<p>This file exports a single <code>supabase</code> object used everywhere in the app. The tricky part: Next.js App Router runs components on the server during build time, before environment variables are available. A plain <code>createClient()</code> call at module level would fail. The solution is a lazy proxy:</p>
+
+<pre><code><span class="kw">import</span> { createClient, SupabaseClient } <span class="kw">from</span> <span class="st">'@supabase/supabase-js'</span>;
+
+<span class="cm">// Only created once, on first use</span>
+<span class="kw">let</span> _supabase: SupabaseClient | <span class="kw">null</span> = <span class="kw">null</span>;
+
+<span class="kw">function</span> <span class="fn">getSupabase</span>() {
+  <span class="kw">if</span> (!_supabase) {
+    <span class="kw">const</span> url = process.env.NEXT_PUBLIC_SUPABASE_URL || <span class="st">''</span>;
+    <span class="kw">const</span> key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || <span class="st">''</span>;
+    _supabase = <span class="fn">createClient</span>(url, key);
+  }
+  <span class="kw">return</span> _supabase;
+}
+
+<span class="cm">// Proxy intercepts property access and defers to getSupabase()</span>
+<span class="kw">export const</span> supabase = <span class="kw">new</span> <span class="ty">Proxy</span>({} <span class="kw">as</span> SupabaseClient, {
+  <span class="fn">get</span>(_target, prop) {
+    <span class="kw">return</span> (<span class="fn">getSupabase</span>() <span class="kw">as unknown as</span> Record&lt;<span class="kw">string</span> | <span class="kw">symbol</span>, <span class="kw">unknown</span>&gt;)[prop];
+  },
+});</code></pre>
+
+<p>Usage anywhere in the app is the same as a regular Supabase client:</p>
+<pre><code><span class="kw">import</span> { supabase } <span class="kw">from</span> <span class="st">'@/lib/supabase'</span>;
+
+<span class="kw">const</span> { data, error } = <span class="kw">await</span> supabase.<span class="fn">from</span>(<span class="st">'players'</span>).<span class="fn">select</span>(<span class="st">'*'</span>);
+<span class="kw">const</span> { data: auth } = <span class="kw">await</span> supabase.auth.<span class="fn">getUser</span>();
+<span class="kw">await</span> supabase.auth.<span class="fn">signOut</span>();</code></pre>
+
+<p>The file also exports TypeScript types matching the database schema:</p>
+<pre><code><span class="kw">export type</span> Player = {
+  id: <span class="kw">string</span>;
+  name: <span class="kw">string</span>;
+  email: <span class="kw">string</span>;
+  is_coach: <span class="kw">boolean</span>;
+};
+
+<span class="kw">export type</span> AttendanceRecord = {
+  player_id: <span class="kw">string</span>;
+  date: <span class="kw">string</span>;
+  present: <span class="kw">boolean</span>;
+};</code></pre>
+
+<h3>8.2 <code>src/lib/program.ts</code> — The 45-Day Training Data</h3>
+
+<p>This is a pure data file — no imports, no side effects. It exports the complete training program for all 45 days. Understanding its structure is key to the session page.</p>
+
+<pre><code><span class="cm">// The Exercise type — one row in a training block</span>
+<span class="kw">export type</span> Exercise = {
+  name: <span class="kw">string</span>;    <span class="cm">// "Goblet squat"</span>
+  sets: <span class="kw">string</span>;    <span class="cm">// "3"</span>
+  reps: <span class="kw">string</span>;    <span class="cm">// "10"</span>
+  rest: <span class="kw">string</span>;    <span class="cm">// "90s"</span>
+  rpe: <span class="kw">string</span>;     <span class="cm">// "6-7"</span>
+  cue: <span class="kw">string</span>;     <span class="cm">// "Knees track over toes."</span>
+  url?: <span class="kw">string</span>;    <span class="cm">// YouTube search URL (optional)</span>
+};
+
+<span class="cm">// A Block is a group of exercises (Warm-up / Main / Cool-down)</span>
+<span class="kw">export type</span> Block = {
+  block: <span class="kw">string</span>;
+  exercises: Exercise[];
+};
+
+<span class="cm">// A DayProgram is one day's full session</span>
+<span class="kw">export type</span> DayProgram = {
+  day: <span class="kw">number</span>;
+  phase: <span class="kw">string</span>;   <span class="cm">// "Foundation" | "Build" | "Peak" | "Taper"</span>
+  color: <span class="kw">string</span>;   <span class="cm">// legacy field, not used in UI (phase is used instead)</span>
+  blocks: Block[];
+};</code></pre>
+
+<p>Days 1–3 have unique exercises. Days 4–45 share a template called <code>sharedExercises</code>:</p>
+
+<pre><code><span class="cm">// Used for days 4–45. All share the same structure:</span>
+<span class="kw">const</span> sharedExercises: Block[] = [
+  {
+    block: <span class="st">"Warm-up"</span>,
+    exercises: [{
+      name: <span class="st">"Dynamic mobility + activation drills"</span>,
+      sets: <span class="st">"2"</span>, reps: <span class="st">"10 min"</span>, rest: <span class="st">"30s"</span>, rpe: <span class="st">"4"</span>,
+      cue: <span class="st">"Prepare joints and nervous system."</span>,
+      url: <span class="st">"https://www.youtube.com/results?search_query=dynamic+warm+up"</span>
+    }]
+  },
+  <span class="cm">// ... Main and Cool-down blocks</span>
+];
+
+<span class="cm">// Days 4–45 are generated in a loop:</span>
+<span class="kw">const</span> days4to45: DayProgram[] = Array.<span class="fn">from</span>({ length: <span class="nm">42</span> }, (_, i) => {
+  <span class="kw">const</span> day = i + <span class="nm">4</span>;
+  <span class="kw">let</span> phase = <span class="st">"Foundation"</span>;
+  <span class="kw">if</span> (day >= <span class="nm">13</span>) phase = <span class="st">"Build"</span>;
+  <span class="kw">if</span> (day >= <span class="nm">27</span>) phase = <span class="st">"Peak"</span>;
+  <span class="kw">if</span> (day >= <span class="nm">39</span>) phase = <span class="st">"Taper"</span>;
+  <span class="kw">return</span> { day, phase, color: <span class="st">"emerald"</span>, blocks: sharedExercises };
+});
+
+<span class="cm">// The exported array: all 45 days</span>
+<span class="kw">export const</span> program: DayProgram[] = [day1, day2, day3, ...days4to45];
+
+<span class="cm">// Returns today's camp day (1–45), or 1 if before camp</span>
+<span class="kw">export function</span> <span class="fn">getCampDay</span>(): <span class="kw">number</span> {
+  <span class="kw">const</span> CAMP_START = <span class="kw">new</span> <span class="ty">Date</span>(<span class="st">'2025-06-01'</span>);
+  <span class="kw">const</span> today = <span class="kw">new</span> <span class="ty">Date</span>();
+  <span class="kw">const</span> diff = Math.<span class="fn">floor</span>((today.getTime() - CAMP_START.getTime()) / (<span class="nm">1000</span> * <span class="nm">60</span> * <span class="nm">60</span> * <span class="nm">24</span>));
+  <span class="kw">return</span> Math.<span class="fn">min</span>(Math.<span class="fn">max</span>(diff + <span class="nm">1</span>, <span class="nm">1</span>), <span class="nm">45</span>);
+}</code></pre>
+
+<div class="callout warn">
+  <div class="callout-title">Update the camp start date</div>
+  <p>The <code>getCampDay()</code> function uses a hardcoded start date. Change <code>'2025-06-01'</code> to your actual camp start date before launching.</p>
+</div>
+
+<h4>Phase Boundaries</h4>
+<table>
+  <thead><tr><th>Phase</th><th>Days</th><th>Accent Color</th><th>Focus</th></tr></thead>
+  <tbody>
+    <tr><td><span class="badge green">Foundation</span></td><td>1–12</td><td>#68dba9</td><td>Movement quality, base fitness</td></tr>
+    <tr><td><span class="badge blue">Build</span></td><td>13–26</td><td>#adc6ff</td><td>Strength & power development</td></tr>
+    <tr><td><span class="badge red">Peak</span></td><td>27–38</td><td>#ffb77c</td><td>Competition preparation, speed</td></tr>
+    <tr><td><span class="badge purple">Taper</span></td><td>39–45</td><td>#d4a8ff</td><td>Recovery, maintenance, confidence</td></tr>
+  </tbody>
+</table>
+
+<!-- ═══════════════════════ SECTION 9 ═══════════════════════ -->
+<h2 id="s9">9. Root Layout & Global Styles</h2>
+
+<h3><code>src/app/layout.tsx</code></h3>
+
+<p>This file wraps every page. It loads fonts and sets the global background color:</p>
+
+<pre><code><span class="kw">import type</span> { Metadata } <span class="kw">from</span> <span class="st">"next"</span>;
+<span class="kw">import</span> <span class="st">"./globals.css"</span>;
+
+<span class="kw">export const</span> metadata: Metadata = {
+  title: <span class="st">"SMASH CAMP"</span>,
+  description: <span class="st">"Elite Badminton Training & Analysis"</span>,
+};
+
+<span class="kw">export default function</span> <span class="fn">RootLayout</span>({ children }: { children: React.ReactNode }) {
+  <span class="kw">return</span> (
+    &lt;html lang=<span class="st">"en"</span>&gt;
+      &lt;head&gt;
+        <span class="cm">{/* Geist + Inter fonts from Google */}</span>
+        &lt;link rel=<span class="st">"preconnect"</span> href=<span class="st">"https://fonts.googleapis.com"</span> /&gt;
+        &lt;link rel=<span class="st">"preconnect"</span> href=<span class="st">"https://fonts.gstatic.com"</span> crossOrigin=<span class="st">"anonymous"</span> /&gt;
+        &lt;link href=<span class="st">"https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Inter:wght@400;500;600&display=swap"</span> rel=<span class="st">"stylesheet"</span> /&gt;
+        <span class="cm">{/* Material Symbols icon font */}</span>
+        &lt;link href=<span class="st">"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"</span> rel=<span class="st">"stylesheet"</span> /&gt;
+      &lt;/head&gt;
+      &lt;body style={{ background: <span class="st">'#0f1511'</span>, color: <span class="st">'#dee4de'</span> }}&gt;
+        {children}
+      &lt;/body&gt;
+    &lt;/html&gt;
+  );
+}</code></pre>
+
+<h3><code>src/app/globals.css</code></h3>
+
+<p>Minimal — just resets box sizing and removes default margins:</p>
+
+<pre><code>*, *::before, *::after {
+  box-sizing: border-box;
+}
+body, h1, h2, h3, p, ul, ol {
+  margin: 0;
+  padding: 0;
+}
+img { max-width: 100%; }</code></pre>
+
+<h4>Using Material Symbols in JSX</h4>
+<pre><code><span class="cm">{/* Renders a filled "star" icon, 24px */}</span>
+&lt;span
+  className=<span class="st">"material-symbols-outlined"</span>
+  style={{ fontSize: <span class="st">'24px'</span>, fontVariationSettings: <span class="st">"'FILL' 1"</span> }}
+&gt;
+  star
+&lt;/span&gt;
+
+<span class="cm">{/* Outlined (unfilled) version — just remove fontVariationSettings */}</span>
+&lt;span className=<span class="st">"material-symbols-outlined"</span> style={{ fontSize: <span class="st">'24px'</span> }}&gt;
+  star
+&lt;/span&gt;</code></pre>
+
+<p>Browse all icon names at <a href="https://fonts.google.com/icons">fonts.google.com/icons</a>. The icon name in the tag is the name shown on that page (e.g., <code>dashboard</code>, <code>fitness_center</code>, <code>leaderboard</code>).</p>
+
+<!-- ═══════════════════════ SECTION 10 ═══════════════════════ -->
+<h2 id="s10">10. Login / Signup Page</h2>
+
+<p><strong>File:</strong> <code>src/app/page.tsx</code> | <strong>Route:</strong> <code>/</code></p>
+
+<p>This is the entry point. It handles both login and signup with a single form that toggles between two modes. The key logic:</p>
+
+<h3>Authentication Flow</h3>
+<pre><code><span class="cm">// On page load — if user is already logged in, redirect immediately</span>
+useEffect(() => {
+  supabase.auth.<span class="fn">getUser</span>().<span class="fn">then</span>(({ data }) => {
+    <span class="kw">if</span> (data.user) <span class="fn">redirectByRole</span>(data.user.id);
+  });
+}, []);
+
+<span class="cm">// Check is_coach flag to decide where to send the user</span>
+<span class="kw">async function</span> <span class="fn">redirectByRole</span>(userId: <span class="kw">string</span>) {
+  <span class="kw">const</span> { data } = <span class="kw">await</span> supabase.<span class="fn">from</span>(<span class="st">'players'</span>).<span class="fn">select</span>(<span class="st">'is_coach'</span>).<span class="fn">eq</span>(<span class="st">'id'</span>, userId).<span class="fn">single</span>();
+  <span class="kw">if</span> (data?.is_coach) router.<span class="fn">push</span>(<span class="st">'/coach'</span>);
+  <span class="kw">else</span> router.<span class="fn">push</span>(<span class="st">'/player'</span>);
+}</code></pre>
+
+<h3>Signup Logic</h3>
+<pre><code><span class="kw">async function</span> <span class="fn">handleSignup</span>(e: React.FormEvent) {
+  e.<span class="fn">preventDefault</span>();
+  <span class="kw">const</span> isCoach = coachCode === (process.env.NEXT_PUBLIC_COACH_CODE || <span class="st">'SMASHCOACH2025'</span>);
+
+  <span class="cm">// Step 1: Create auth user</span>
+  <span class="kw">const</span> { data, error } = <span class="kw">await</span> supabase.auth.<span class="fn">signUp</span>({ email, password });
+  <span class="kw">if</span> (error) { <span class="cm">/* show error */</span> <span class="kw">return</span>; }
+
+  <span class="cm">// Step 2: Insert into players table with name and role</span>
+  <span class="kw">if</span> (data.user) {
+    <span class="kw">await</span> supabase.<span class="fn">from</span>(<span class="st">'players'</span>).<span class="fn">insert</span>({
+      id: data.user.id,
+      name: name || email.<span class="fn">split</span>(<span class="st">'@'</span>)[<span class="nm">0</span>],
+      email,
+      is_coach: isCoach,
+    });
+    <span class="kw">await</span> <span class="fn">redirectByRole</span>(data.user.id);
+  }
+}</code></pre>
+
+<div class="callout info">
+  <div class="callout-title">Why two steps?</div>
+  <p>Supabase Auth creates a row in its internal <code>auth.users</code> table. But we also need a row in our own <code>players</code> table with the user's display name and role. That's the second <code>insert</code> call. The <code>id</code> must match the auth user's ID exactly.</p>
+</div>
+
+<!-- ═══════════════════════ SECTION 11 ═══════════════════════ -->
+<h2 id="s11">11. Player Dashboard</h2>
+
+<p><strong>File:</strong> <code>src/app/player/page.tsx</code> | <strong>Route:</strong> <code>/player</code></p>
+
+<h3>What it shows</h3>
+<ul>
+  <li>Time-based greeting: "Good morning / afternoon / evening, [name]"</li>
+  <li>4 stat tiles: attendance %, streak 🔥, today's completion %, avg completion %</li>
+  <li>Today's session card with exercise preview and Start/Continue button</li>
+  <li>Attendance check-in button ("I'm Here") with a 3-second celebration animation</li>
+  <li>Quick links: Program, Squad, Nutrition</li>
+</ul>
+
+<h3>Key Patterns</h3>
+
+<h4>Time-based greeting</h4>
+<pre><code><span class="kw">function</span> <span class="fn">getGreeting</span>() {
+  <span class="kw">const</span> h = <span class="kw">new</span> <span class="ty">Date</span>().<span class="fn">getHours</span>();
+  <span class="kw">if</span> (h &lt; <span class="nm">12</span>) <span class="kw">return</span> <span class="st">'Good morning'</span>;
+  <span class="kw">if</span> (h &lt; <span class="nm">17</span>) <span class="kw">return</span> <span class="st">'Good afternoon'</span>;
+  <span class="kw">return</span> <span class="st">'Good evening'</span>;
+}</code></pre>
+
+<h4>Streak calculation</h4>
+<pre><code><span class="kw">function</span> <span class="fn">calcStreak</span>(dates: <span class="kw">string</span>[]): <span class="kw">number</span> {
+  <span class="kw">const</span> set = <span class="kw">new</span> <span class="ty">Set</span>(dates);
+  <span class="kw">let</span> streak = <span class="nm">0</span>;
+  <span class="kw">const</span> today = <span class="kw">new</span> <span class="ty">Date</span>();
+  <span class="kw">for</span> (<span class="kw">let</span> i = <span class="nm">0</span>; i &lt; <span class="nm">45</span>; i++) {
+    <span class="kw">const</span> d = <span class="kw">new</span> <span class="ty">Date</span>(today);
+    d.<span class="fn">setDate</span>(d.<span class="fn">getDate</span>() - i);
+    <span class="kw">const</span> ds = d.<span class="fn">toISOString</span>().<span class="fn">split</span>(<span class="st">'T'</span>)[<span class="nm">0</span>];
+    <span class="kw">if</span> (set.<span class="fn">has</span>(ds)) streak++;
+    <span class="kw">else break</span>; <span class="cm">// stop at first gap</span>
+  }
+  <span class="kw">return</span> streak;
+}</code></pre>
+
+<h4>Attendance check-in (upsert)</h4>
+<pre><code><span class="cm">// upsert = insert if not exists, update if it does</span>
+<span class="kw">await</span> supabase.<span class="fn">from</span>(<span class="st">'attendance'</span>).<span class="fn">upsert</span>({
+  player_id: userId,
+  date: <span class="kw">new</span> <span class="ty">Date</span>().<span class="fn">toISOString</span>().<span class="fn">split</span>(<span class="st">'T'</span>)[<span class="nm">0</span>],
+  present: <span class="kw">true</span>,
+}, { onConflict: <span class="st">'player_id,date'</span> });
+
+<span class="cm">// Show celebration for 3 seconds</span>
+setJustCheckedIn(<span class="kw">true</span>);
+setTimeout(() => <span class="fn">setJustCheckedIn</span>(<span class="kw">false</span>), <span class="nm">3000</span>);</code></pre>
+
+<h4>Phase color system</h4>
+<p>This is used across multiple pages. Define it once and reference it everywhere:</p>
+<pre><code><span class="kw">const</span> PHASE_META: Record&lt;<span class="kw">string</span>, { accent: <span class="kw">string</span>; dim: <span class="kw">string</span>; border: <span class="kw">string</span>; dark: <span class="kw">string</span> }&gt; = {
+  Foundation: { accent: <span class="st">'#68dba9'</span>, dim: <span class="st">'rgba(104,219,169,0.08)'</span>, border: <span class="st">'rgba(104,219,169,0.2)'</span>,  dark: <span class="st">'#002114'</span> },
+  Build:      { accent: <span class="st">'#adc6ff'</span>, dim: <span class="st">'rgba(173,198,255,0.08)'</span>, border: <span class="st">'rgba(173,198,255,0.2)'</span>,  dark: <span class="st">'#001a4d'</span> },
+  Peak:       { accent: <span class="st">'#ffb77c'</span>, dim: <span class="st">'rgba(255,183,124,0.08)'</span>, border: <span class="st">'rgba(255,183,124,0.2)'</span>,  dark: <span class="st">'#3d1800'</span> },
+  Taper:      { accent: <span class="st">'#d4a8ff'</span>, dim: <span class="st">'rgba(212,168,255,0.08)'</span>, border: <span class="st">'rgba(212,168,255,0.2)'</span>,  dark: <span class="st">'#1a0040'</span> },
+};</code></pre>
+
+<!-- ═══════════════════════ SECTION 12 ═══════════════════════ -->
+<h2 id="s12">12. Coach Dashboard</h2>
+
+<p><strong>File:</strong> <code>src/app/coach/page.tsx</code> | <strong>Route:</strong> <code>/coach</code></p>
+
+<h3>What it shows</h3>
+<ul>
+  <li>Personalized greeting with coach's name</li>
+  <li>3 stat tiles: Present Today / Total, Absent count, Avg session completion</li>
+  <li>Color-coded attendance rate bar (green ≥ 90%, yellow ≥ 75%, red below)</li>
+  <li>Roll Call: avatar bubbles for all players (green border = present today)</li>
+  <li>Full squad roster sorted by: present first, then by completion %</li>
+  <li>Each player row shows completion progress bar</li>
+</ul>
+
+<h3>Key Patterns</h3>
+
+<h4>Fetching today's attendance</h4>
+<pre><code><span class="kw">const</span> today = <span class="kw">new</span> <span class="ty">Date</span>().<span class="fn">toISOString</span>().<span class="fn">split</span>(<span class="st">'T'</span>)[<span class="nm">0</span>]; <span class="cm">// "2025-06-15"</span>
+<span class="kw">const</span> { data: todayAttendance } = <span class="kw">await</span> supabase
+  .<span class="fn">from</span>(<span class="st">'attendance'</span>)
+  .<span class="fn">select</span>(<span class="st">'player_id'</span>)
+  .<span class="fn">eq</span>(<span class="st">'date'</span>, today)
+  .<span class="fn">eq</span>(<span class="st">'present'</span>, <span class="kw">true</span>);
+
+<span class="kw">const</span> presentIds = <span class="kw">new</span> <span class="ty">Set</span>(todayAttendance?.map(a => a.player_id));
+<span class="kw">const</span> isPresent = (id: <span class="kw">string</span>) => presentIds.<span class="fn">has</span>(id);</code></pre>
+
+<h4>Sorting squad roster</h4>
+<pre><code>roster.<span class="fn">sort</span>((a, b) => {
+  <span class="kw">if</span> (<span class="fn">isPresent</span>(a.id) !== <span class="fn">isPresent</span>(b.id)) <span class="kw">return</span> <span class="fn">isPresent</span>(a.id) ? <span class="nm">-1</span> : <span class="nm">1</span>;
+  <span class="kw">return</span> b.completionPct - a.completionPct;
+});</code></pre>
+
+<h4>Dynamic progress bar color</h4>
+<pre><code><span class="kw">function</span> <span class="fn">barColor</span>(pct: <span class="kw">number</span>) {
+  <span class="kw">if</span> (pct >= <span class="nm">80</span>) <span class="kw">return</span> <span class="st">'#68dba9'</span>; <span class="cm">// green</span>
+  <span class="kw">if</span> (pct >= <span class="nm">50</span>) <span class="kw">return</span> <span class="st">'#ffd700'</span>; <span class="cm">// yellow</span>
+  <span class="kw">return</span> <span class="st">'#ffb4ab'</span>;                  <span class="cm">// red</span>
+}</code></pre>
+
+<!-- ═══════════════════════ SECTION 13 ═══════════════════════ -->
+<h2 id="s13">13. Training Program Page</h2>
+
+<p><strong>File:</strong> <code>src/app/program/page.tsx</code> | <strong>Route:</strong> <code>/program</code></p>
+
+<h3>What it shows</h3>
+<ul>
+  <li>Hero card: today's day number, phase, and "Start Today's Session" button</li>
+  <li>All 45 days grouped by phase section</li>
+  <li>Each day card: day number, phase badge, completion %, TODAY badge if current, checkmark if done</li>
+  <li>Tapping a card navigates to <code>/session/[day]</code></li>
+  <li>Future days are slightly dimmed</li>
+</ul>
+
+<h3>Key Pattern — Fetching completion per day</h3>
+<pre><code><span class="cm">// Fetch all session records for this player</span>
+<span class="kw">const</span> { data: sessions } = <span class="kw">await</span> supabase
+  .<span class="fn">from</span>(<span class="st">'daily_sessions'</span>)
+  .<span class="fn">select</span>(<span class="st">'day_number, completion_percent'</span>)
+  .<span class="fn">eq</span>(<span class="st">'player_id'</span>, userId);
+
+<span class="cm">// Convert to a map: { dayNumber: completionPct }</span>
+<span class="kw">const</span> completionMap = <span class="kw">new</span> <span class="ty">Map</span>(
+  sessions?.map(s => [s.day_number, s.completion_percent]) || []
+);</code></pre>
+
+<h3>Grouping Days by Phase</h3>
+<pre><code><span class="kw">const</span> phases = [
+  { name: <span class="st">'Foundation'</span>, days: program.<span class="fn">filter</span>(d => d.phase === <span class="st">'Foundation'</span>) },
+  { name: <span class="st">'Build'</span>,       days: program.<span class="fn">filter</span>(d => d.phase === <span class="st">'Build'</span>) },
+  { name: <span class="st">'Peak'</span>,        days: program.<span class="fn">filter</span>(d => d.phase === <span class="st">'Peak'</span>) },
+  { name: <span class="st">'Taper'</span>,       days: program.<span class="fn">filter</span>(d => d.phase === <span class="st">'Taper'</span>) },
+];</code></pre>
+
+<!-- ═══════════════════════ SECTION 14 ═══════════════════════ -->
+<h2 id="s14">14. Daily Session Page (Dynamic Route)</h2>
+
+<p><strong>File:</strong> <code>src/app/session/[day]/page.tsx</code> | <strong>Route:</strong> <code>/session/1</code> through <code>/session/45</code></p>
+
+<h3>What it shows</h3>
+<ul>
+  <li>Full session for a specific camp day</li>
+  <li>Block pills at top (Warm-up / Main / Cool-down) as scroll anchors</li>
+  <li>Each exercise: checkbox, name, sets/reps/rest/RPE details, coaching cue, and a "Watch" button</li>
+  <li>Real-time completion percentage as exercises are checked off</li>
+  <li>Persists to Supabase on every checkbox toggle</li>
+</ul>
+
+<h3>Reading the Dynamic Param</h3>
+<pre><code><span class="cm">// Next.js App Router passes params as props</span>
+<span class="kw">export default function</span> <span class="fn">SessionPage</span>({ params }: { params: { day: <span class="kw">string</span> } }) {
+  <span class="kw">const</span> dayNum = parseInt(params.day);
+  <span class="kw">const</span> dayData = program.<span class="fn">find</span>(d => d.day === dayNum);
+  <span class="kw">if</span> (!dayData) <span class="kw">return</span> &lt;<span class="ty">div</span>&gt;Day not found&lt;/<span class="ty">div</span>&gt;;
+  <span class="cm">// ...</span>
+}</code></pre>
+
+<h3>Checkbox Toggle & Persistence</h3>
+<pre><code><span class="kw">async function</span> <span class="fn">toggleExercise</span>(exerciseName: <span class="kw">string</span>, blockType: <span class="kw">string</span>, checked: <span class="kw">boolean</span>) {
+  <span class="cm">// Optimistic update first (immediate UI response)</span>
+  <span class="fn">setCompleted</span>(prev => ({ ...prev, [exerciseName]: checked }));
+
+  <span class="cm">// Persist to database</span>
+  <span class="kw">await</span> supabase.<span class="fn">from</span>(<span class="st">'exercise_completions'</span>).<span class="fn">upsert</span>({
+    player_id: userId,
+    day_number: dayNum,
+    exercise_name: exerciseName,
+    block_type: blockType,
+    completed: checked,
+    date: <span class="kw">new</span> <span class="ty">Date</span>().<span class="fn">toISOString</span>().<span class="fn">split</span>(<span class="st">'T'</span>)[<span class="nm">0</span>],
+  }, { onConflict: <span class="st">'player_id,day_number,exercise_name'</span> });
+
+  <span class="cm">// Recalculate completion %</span>
+  <span class="kw">const</span> total = allExercises.length;
+  <span class="kw">const</span> done = Object.<span class="fn">values</span>(newCompleted).<span class="fn">filter</span>(Boolean).length;
+  <span class="kw">const</span> pct = Math.<span class="fn">round</span>((done / total) * <span class="nm">100</span>);
+
+  <span class="cm">// Update daily_sessions table</span>
+  <span class="kw">await</span> supabase.<span class="fn">from</span>(<span class="st">'daily_sessions'</span>).<span class="fn">upsert</span>({
+    player_id: userId,
+    day_number: dayNum,
+    completion_percent: pct,
+    date: <span class="kw">new</span> <span class="ty">Date</span>().<span class="fn">toISOString</span>().<span class="fn">split</span>(<span class="st">'T'</span>)[<span class="nm">0</span>],
+  }, { onConflict: <span class="st">'player_id,day_number'</span> });
+}</code></pre>
+
+<h3>YouTube Watch Button</h3>
+<pre><code><span class="cm">// Only render if the exercise has a url</span>
+{exercise.url && (
+  &lt;a
+    href={exercise.url}
+    target=<span class="st">"_blank"</span>
+    rel=<span class="st">"noopener noreferrer"</span>
+    style={{
+      display: <span class="st">'inline-flex'</span>, alignItems: <span class="st">'center'</span>, gap: <span class="st">'4px'</span>,
+      background: <span class="st">'rgba(255,0,0,0.15)'</span>, border: <span class="st">'1px solid rgba(255,0,0,0.3)'</span>,
+      color: <span class="st">'#ff6b6b'</span>, padding: <span class="st">'3px 8px'</span>, borderRadius: <span class="st">'6px'</span>,
+      fontSize: <span class="st">'11px'</span>, fontWeight: <span class="nm">700</span>, textDecoration: <span class="st">'none'</span>,
+      cursor: <span class="st">'pointer'</span>, flexShrink: <span class="nm">0</span>,
+    }}
+  &gt;
+    ▶ Watch
+  &lt;/a&gt;
+)}</code></pre>
+
+<!-- ═══════════════════════ SECTION 15 ═══════════════════════ -->
+<h2 id="s15">15. Squad Page</h2>
+
+<p><strong>File:</strong> <code>src/app/squad/page.tsx</code> | <strong>Route:</strong> <code>/squad</code></p>
+
+<h3>What it shows</h3>
+<ul>
+  <li>"Training Today" avatar strip — green border for present, grey for absent</li>
+  <li>Full squad list with streak, attendance %, today's completion</li>
+  <li>Coaches can tap any player row to navigate to <code>/player/[id]</code></li>
+  <li>Players see the same view but can't tap into other players</li>
+</ul>
+
+<h3>Key Pattern — Loading All Player Stats</h3>
+<pre><code><span class="kw">const</span> [players, attendance, sessions] = <span class="kw">await</span> Promise.<span class="fn">all</span>([
+  supabase.<span class="fn">from</span>(<span class="st">'players'</span>).<span class="fn">select</span>(<span class="st">'*'</span>).<span class="fn">eq</span>(<span class="st">'is_coach'</span>, <span class="kw">false</span>),
+  supabase.<span class="fn">from</span>(<span class="st">'attendance'</span>).<span class="fn">select</span>(<span class="st">'player_id, date'</span>).<span class="fn">eq</span>(<span class="st">'present'</span>, <span class="kw">true</span>),
+  supabase.<span class="fn">from</span>(<span class="st">'daily_sessions'</span>).<span class="fn">select</span>(<span class="st">'player_id, completion_percent'</span>),
+]);
+
+<span class="cm">// Build per-player stats</span>
+<span class="kw">const</span> roster = players.data?.map(p => {
+  <span class="kw">const</span> myDates = attendance.data
+    ?.filter(a => a.player_id === p.id)
+    .map(a => a.date) || [];
+  <span class="kw">const</span> streak = <span class="fn">calcStreak</span>(myDates);
+  <span class="kw">const</span> attendancePct = campDay > <span class="nm">0</span>
+    ? Math.<span class="fn">round</span>((myDates.length / campDay) * <span class="nm">100</span>) : <span class="nm">0</span>;
+  <span class="kw">const</span> mySessions = sessions.data?.filter(s => s.player_id === p.id) || [];
+  <span class="kw">const</span> avgCompletion = mySessions.length > <span class="nm">0</span>
+    ? Math.<span class="fn">round</span>(mySessions.<span class="fn">reduce</span>((sum, s) => sum + s.completion_percent, <span class="nm">0</span>) / mySessions.length)
+    : <span class="nm">0</span>;
+  <span class="kw">return</span> { ...p, streak, attendancePct, avgCompletion, isPresentToday: presentIds.<span class="fn">has</span>(p.id) };
+});</code></pre>
+
+<!-- ═══════════════════════ SECTION 16 ═══════════════════════ -->
+<h2 id="s16">16. Nutrition Tracker Page</h2>
+
+<p><strong>File:</strong> <code>src/app/nutrition/page.tsx</code> | <strong>Route:</strong> <code>/nutrition</code></p>
+
+<h3>What it shows</h3>
+<ul>
+  <li>6 meal cards (Pre-Workout, Breakfast, Mid-Morning, Lunch, Evening Snack, Dinner)</li>
+  <li>Each meal can be toggled as "logged" — stored in Supabase</li>
+  <li>Hydration tracker with + / − buttons and a goal of 3000ml</li>
+  <li>Dynamic header: "Perfect day! 🎉" when all 6 meals are logged</li>
+  <li>All data is date-scoped to today</li>
+</ul>
+
+<h3>Meal Data Structure</h3>
+<pre><code><span class="kw">const</span> MEALS = [
+  { name: <span class="st">'Pre-Workout'</span>,   time: <span class="st">'6:00 AM'</span>,  icon: <span class="st">'🌅'</span>, color: <span class="st">'#ffb77c'</span>, items: [<span class="st">'Banana'</span>, <span class="st">'Handful of nuts'</span>] },
+  { name: <span class="st">'Breakfast'</span>,     time: <span class="st">'8:00 AM'</span>,  icon: <span class="st">'🍳'</span>, color: <span class="st">'#68dba9'</span>, items: [<span class="st">'Eggs'</span>, <span class="st">'Toast'</span>, <span class="st">'OJ'</span>] },
+  { name: <span class="st">'Mid-Morning'</span>,   time: <span class="st">'10:30 AM'</span>, icon: <span class="st">'🥛'</span>, color: <span class="st">'#adc6ff'</span>, items: [<span class="st">'Protein shake'</span>] },
+  { name: <span class="st">'Lunch'</span>,         time: <span class="st">'1:00 PM'</span>,  icon: <span class="st">'🍱'</span>, color: <span class="st">'#d4a8ff'</span>, items: [<span class="st">'Rice'</span>, <span class="st">'Chicken'</span>, <span class="st">'Veg'</span>] },
+  { name: <span class="st">'Evening Snack'</span>, time: <span class="st">'4:00 PM'</span>,  icon: <span class="st">'🍎'</span>, color: <span class="st">'#ffb77c'</span>, items: [<span class="st">'Fruit'</span>, <span class="st">'Nuts'</span>] },
+  { name: <span class="st">'Dinner'</span>,        time: <span class="st">'7:00 PM'</span>,  icon: <span class="st">'🥗'</span>, color: <span class="st">'#68dba9'</span>, items: [<span class="st">'Balanced meal'</span>] },
+];</code></pre>
+
+<h3>Hydration — Special Row in nutrition_logs</h3>
+<pre><code><span class="cm">// Hydration is stored as a special row with meal_name = '__hydration__'</span>
+<span class="cm">// The "logged" column is repurposed: we store the amount in a separate field</span>
+<span class="cm">// Actually: we track total_ml in state and upsert a single hydration row</span>
+
+<span class="kw">await</span> supabase.<span class="fn">from</span>(<span class="st">'nutrition_logs'</span>).<span class="fn">upsert</span>({
+  player_id: userId,
+  date: today,
+  meal_name: <span class="st">'__hydration__'</span>,
+  logged: hydrationMl >= HYDRATION_GOAL,
+}, { onConflict: <span class="st">'player_id,date,meal_name'</span> });
+
+<span class="cm">// When counting "meals logged", exclude the __hydration__ row:</span>
+<span class="kw">const</span> mealsSet = <span class="kw">new</span> <span class="ty">Set</span>(
+  logs?.filter(l => l.meal_name !== <span class="st">'__hydration__'</span> && l.logged)
+       .map(l => l.meal_name)
+);
+<span class="kw">const</span> mealsLogged = mealsSet.size;</code></pre>
+
+<!-- ═══════════════════════ SECTION 17 ═══════════════════════ -->
+<h2 id="s17">17. Leaderboard Page</h2>
+
+<p><strong>File:</strong> <code>src/app/leaderboard/page.tsx</code> | <strong>Route:</strong> <code>/leaderboard</code></p>
+
+<h3>Score Formula</h3>
+<pre><code>score = Math.round(attendancePct * 0.5 + avgCompletion * 0.5)</code></pre>
+
+<p>Both attendance and completion are weighted equally. The max score is 100.</p>
+
+<h3>What it shows</h3>
+<ul>
+  <li>Gold-gradient MVP card for #1 player</li>
+  <li>"Your Rank" highlight card if current user isn't #1</li>
+  <li>Full ranked list: gold/silver/bronze medals for top 3, then numbered</li>
+  <li>Each row: dual-color progress bar (green = attendance contribution, blue = completion contribution)</li>
+  <li>Visible to both coaches and players</li>
+</ul>
+
+<h3>Rank Colors</h3>
+<pre><code><span class="kw">const</span> RANK_COLORS = [<span class="st">'#ffd700'</span>, <span class="st">'#c0c0c0'</span>, <span class="st">'#cd7f32'</span>]; <span class="cm">// gold, silver, bronze</span>
+<span class="kw">const</span> RANK_LABELS = [<span class="st">'🥇'</span>, <span class="st">'🥈'</span>, <span class="st">'🥉'</span>];</code></pre>
+
+<!-- ═══════════════════════ SECTION 18 ═══════════════════════ -->
+<h2 id="s18">18. Shared Components</h2>
+
+<h3><code>src/components/BottomNav.tsx</code></h3>
+
+<p>The fixed bottom navigation bar. It accepts a <code>role</code> prop and shows different nav items for coaches vs players:</p>
+
+<pre><code><span class="kw">const</span> coachNav: NavItem[] = [
+  { label: <span class="st">'Dashboard'</span>, icon: <span class="st">'dashboard'</span>,      path: <span class="st">'/coach'</span> },
+  { label: <span class="st">'Squad'</span>,     icon: <span class="st">'group'</span>,          path: <span class="st">'/squad'</span> },
+  { label: <span class="st">'Calendar'</span>,  icon: <span class="st">'calendar_month'</span>, path: <span class="st">'/calendar'</span> },
+  { label: <span class="st">'Scores'</span>,    icon: <span class="st">'leaderboard'</span>,   path: <span class="st">'/leaderboard'</span> },
+];
+
+<span class="kw">const</span> playerNav: NavItem[] = [
+  { label: <span class="st">'Dashboard'</span>, icon: <span class="st">'dashboard'</span>,    path: <span class="st">'/player'</span> },
+  { label: <span class="st">'Program'</span>,   icon: <span class="st">'fitness_center'</span>, path: <span class="st">'/program'</span> },
+  { label: <span class="st">'Nutrition'</span>, icon: <span class="st">'restaurant'</span>,    path: <span class="st">'/nutrition'</span> },
+  { label: <span class="st">'Scores'</span>,    icon: <span class="st">'leaderboard'</span>,   path: <span class="st">'/leaderboard'</span> },
+];
+
+<span class="cm">// Active detection — handles both exact match and child routes</span>
+<span class="kw">const</span> isActive = pathname === item.path
+  || (item.path !== <span class="st">'/'</span> && pathname.<span class="fn">startsWith</span>(item.path + <span class="st">'/'</span>));</code></pre>
+
+<p>Usage in any page:</p>
+<pre><code><span class="kw">import</span> BottomNav <span class="kw">from</span> <span class="st">'@/components/BottomNav'</span>;
+
+<span class="cm">// At the bottom of your page JSX:</span>
+&lt;<span class="ty">BottomNav</span> role={isCoach ? <span class="st">'coach'</span> : <span class="st">'player'</span>} /&gt;</code></pre>
+
+<div class="callout tip">
+  <div class="callout-title">The 100px bottom padding trick</div>
+  <p>The BottomNav is 72px tall and fixed. Always add <code>paddingBottom: '100px'</code> to your main content area so the last item isn't hidden behind the nav.</p>
+</div>
+
+<!-- ═══════════════════════ SECTION 19 ═══════════════════════ -->
+<h2 id="s19">19. Deploy to Vercel</h2>
+
+<h3>Step 1 — Push to GitHub</h3>
+
+<pre><code><span class="cm"># From inside smash-camp/</span>
+git init
+git add .
+git commit -m "Initial commit"
+
+<span class="cm"># Create a repo on github.com, then:</span>
+git remote add origin https://github.com/YOUR_USERNAME/smash-camp.git
+git push -u origin main</code></pre>
+
+<div class="callout warn">
+  <div class="callout-title">Verify .gitignore first</div>
+  <p>Make sure <code>.env.local</code> is in your <code>.gitignore</code>. Next.js creates this automatically. Open <code>.gitignore</code> and confirm you see a line like <code>.env.local</code> or <code>.env*</code>.</p>
+</div>
+
+<h3>Step 2 — Connect Vercel</h3>
+
+<ol class="steps">
+  <li>Go to <a href="https://vercel.com">vercel.com</a> → Sign in with GitHub</li>
+  <li>Click <strong>Add New → Project</strong></li>
+  <li>Find your <code>smash-camp</code> repo and click <strong>Import</strong></li>
+  <li>Vercel auto-detects Next.js — don't change build settings</li>
+  <li>Expand <strong>Environment Variables</strong> and add all three variables from your <code>.env.local</code>:</li>
+</ol>
+
+<table>
+  <thead><tr><th>Name</th><th>Value</th></tr></thead>
+  <tbody>
+    <tr><td><code>NEXT_PUBLIC_SUPABASE_URL</code></td><td>Your Supabase project URL</td></tr>
+    <tr><td><code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code></td><td>Your Supabase anon key</td></tr>
+    <tr><td><code>NEXT_PUBLIC_COACH_CODE</code></td><td>Your secret coach code</td></tr>
+  </tbody>
+</table>
+
+<ol class="steps" start="6">
+  <li>Click <strong>Deploy</strong>. Wait ~90 seconds.</li>
+  <li>Vercel gives you a URL like <code>smash-camp.vercel.app</code> — your app is live!</li>
+</ol>
+
+<h3>Step 3 — Auto-deploys</h3>
+
+<p>After the initial setup, every <code>git push</code> to <code>main</code> automatically triggers a new deployment. Edit code → push → Vercel builds and deploys in ~60 seconds.</p>
+
+<pre><code><span class="cm"># The workflow for every change:</span>
+git add src/app/player/page.tsx
+git commit -m "update player dashboard"
+git push</code></pre>
+
+<h3>Custom Domain (Optional)</h3>
+<p>In Vercel → your project → Settings → Domains → Add your domain. Vercel handles SSL automatically.</p>
+
+<!-- ═══════════════════════ SECTION 20 ═══════════════════════ -->
+<h2 id="s20">20. Common Gotchas & Fixes</h2>
+
+<h3>Gotcha 1 — "Email not confirmed" login error</h3>
+
+<div class="callout danger">
+  <div class="callout-title">Symptom</div>
+  <p>Player signs up and immediately tries to log in but gets: <em>"Email not confirmed"</em></p>
+</div>
+
+<p><strong>Fix:</strong> In Supabase → Authentication → Sign In / Up → disable the "Confirm Email" toggle. If a user is already stuck:</p>
+<ol>
+  <li>Go to Supabase → Authentication → Users</li>
+  <li>Find the stuck user and delete them</li>
+  <li>Have them sign up again (now it works because email confirmation is off)</li>
+</ol>
+
+<h3>Gotcha 2 — Supabase client throws in build/server context</h3>
+
+<div class="callout danger">
+  <div class="callout-title">Symptom</div>
+  <p>Build fails with "createClient is not a function" or environment variables are undefined</p>
+</div>
+
+<p><strong>Fix:</strong> Use the Proxy pattern shown in Section 8.1. Never call <code>createClient()</code> at module top level.</p>
+
+<h3>Gotcha 3 — <code>useRouter</code> and <code>usePathname</code> require 'use client'</h3>
+
+<div class="callout danger">
+  <div class="callout-title">Symptom</div>
+  <p><em>"useRouter can only be used in Client Components"</em></p>
+</div>
+
+<p><strong>Fix:</strong> Add <code>'use client';</code> as the very first line of any file that uses React hooks, <code>useRouter</code>, <code>usePathname</code>, <code>useState</code>, or <code>useEffect</code>.</p>
+
+<h3>Gotcha 4 — BottomNav active state on child routes</h3>
+
+<div class="callout danger">
+  <div class="callout-title">Symptom</div>
+  <p>On <code>/program</code>, the Program tab isn't highlighted. Or on <code>/session/5</code>, nothing is highlighted.</p>
+</div>
+
+<p><strong>Fix:</strong> Use this active check (the plain <code>===</code> check misses child routes):</p>
+<pre><code><span class="kw">const</span> isActive = pathname === item.path
+  || (item.path !== <span class="st">'/'</span> && pathname.<span class="fn">startsWith</span>(item.path + <span class="st">'/'</span>));</code></pre>
+
+<h3>Gotcha 5 — Hydration count includes the <code>__hydration__</code> row</h3>
+
+<div class="callout danger">
+  <div class="callout-title">Symptom</div>
+  <p>Nutrition page shows "7 of 6 meals logged" — because the hydration row is being counted as a meal.</p>
+</div>
+
+<p><strong>Fix:</strong> Filter it out when counting meals:</p>
+<pre><code><span class="kw">const</span> mealsLogged = <span class="kw">new</span> <span class="ty">Set</span>(
+  logs?.filter(l => l.meal_name !== <span class="st">'__hydration__'</span> && l.logged).map(l => l.meal_name)
+).size;</code></pre>
+
+<h3>Gotcha 6 — RLS blocks reading other players' data</h3>
+
+<div class="callout danger">
+  <div class="callout-title">Symptom</div>
+  <p>Leaderboard or Squad page is empty even though data exists</p>
+</div>
+
+<p><strong>Fix:</strong> The "read all" policies for <code>players</code>, <code>attendance</code>, and <code>daily_sessions</code> must use <code>USING (true)</code> — not <code>USING (auth.uid() = player_id)</code>. Re-run the RLS policies from Section 5.4 if needed.</p>
+
+<h3>Gotcha 7 — upsert fails without the right <code>onConflict</code> key</h3>
+
+<div class="callout danger">
+  <div class="callout-title">Symptom</div>
+  <p>upsert creates duplicate rows instead of updating the existing one</p>
+</div>
+
+<p><strong>Fix:</strong> The <code>onConflict</code> must match the <code>UNIQUE</code> constraint defined in your table schema exactly. For example:</p>
+<pre><code><span class="cm">// attendance table has UNIQUE(player_id, date)</span>
+.<span class="fn">upsert</span>({ ... }, { onConflict: <span class="st">'player_id,date'</span> })
+
+<span class="cm">// exercise_completions has UNIQUE(player_id, day_number, exercise_name)</span>
+.<span class="fn">upsert</span>({ ... }, { onConflict: <span class="st">'player_id,day_number,exercise_name'</span> })</code></pre>
+
+<h3>Gotcha 8 — TypeScript error on dynamic params in Next.js 15</h3>
+
+<div class="callout danger">
+  <div class="callout-title">Symptom</div>
+  <p>TypeScript error: <em>"Type 'Promise&lt;{day: string}&gt;' is not assignable to parameter"</em></p>
+</div>
+
+<p>In Next.js 15, <code>params</code> in server components are asynchronous. If you see this error, use <code>use(params)</code> or make the component async:</p>
+<pre><code><span class="cm">// Option A: async component with await</span>
+<span class="kw">export default async function</span> <span class="fn">SessionPage</span>({ params }: { params: <span class="ty">Promise</span>&lt;{ day: <span class="kw">string</span> }&gt; }) {
+  <span class="kw">const</span> { day } = <span class="kw">await</span> params;
+  <span class="cm">// ...</span>
+}
+
+<span class="cm">// Option B: cast the type if you know it's synchronous (client component)</span>
+<span class="kw">export default function</span> <span class="fn">SessionPage</span>({ params }: { params: { day: <span class="kw">string</span> } }) {
+  <span class="kw">const</span> dayNum = parseInt(params.day);
+  <span class="cm">// ...</span>
+}</code></pre>
+
+<!-- ═══════════════════════ SECTION 21 ═══════════════════════ -->
+<h2 id="s21">21. Extending the App</h2>
+
+<h3>Add a New Page</h3>
+<ol class="steps">
+  <li>Create the folder: <code>src/app/newpage/</code></li>
+  <li>Create the file: <code>src/app/newpage/page.tsx</code></li>
+  <li>Start with this template:
+<pre><code><span class="st">'use client'</span>;
+<span class="kw">import</span> { useEffect, useState } <span class="kw">from</span> <span class="st">'react'</span>;
+<span class="kw">import</span> { useRouter } <span class="kw">from</span> <span class="st">'next/navigation'</span>;
+<span class="kw">import</span> { supabase } <span class="kw">from</span> <span class="st">'@/lib/supabase'</span>;
+<span class="kw">import</span> BottomNav <span class="kw">from</span> <span class="st">'@/components/BottomNav'</span>;
+
+<span class="kw">export default function</span> <span class="fn">NewPage</span>() {
+  <span class="kw">const</span> router = <span class="fn">useRouter</span>();
+  <span class="kw">const</span> [loading, setLoading] = <span class="fn">useState</span>(<span class="kw">true</span>);
+  <span class="kw">const</span> [isCoach, setIsCoach] = <span class="fn">useState</span>(<span class="kw">false</span>);
+
+  <span class="fn">useEffect</span>(() => {
+    <span class="kw">async function</span> <span class="fn">load</span>() {
+      <span class="kw">const</span> { data: auth } = <span class="kw">await</span> supabase.auth.<span class="fn">getUser</span>();
+      <span class="kw">if</span> (!auth.user) { router.<span class="fn">push</span>(<span class="st">'/'</span>); <span class="kw">return</span>; }
+      <span class="kw">const</span> { data: me } = <span class="kw">await</span> supabase.<span class="fn">from</span>(<span class="st">'players'</span>).<span class="fn">select</span>(<span class="st">'is_coach'</span>).<span class="fn">eq</span>(<span class="st">'id'</span>, auth.user.id).<span class="fn">single</span>();
+      <span class="fn">setIsCoach</span>(!!me?.is_coach);
+      <span class="cm">// Load your data here</span>
+      <span class="fn">setLoading</span>(<span class="kw">false</span>);
+    }
+    <span class="fn">load</span>();
+  }, [router]);
+
+  <span class="kw">if</span> (loading) <span class="kw">return</span> &lt;<span class="ty">div</span> style={{ minHeight: <span class="st">'100vh'</span>, background: <span class="st">'#0f1511'</span> }}&gt;Loading...&lt;/<span class="ty">div</span>&gt;;
+
+  <span class="kw">return</span> (
+    &lt;<span class="ty">div</span> style={{ background: <span class="st">'#0f1511'</span>, minHeight: <span class="st">'100vh'</span>, display: <span class="st">'flex'</span>, flexDirection: <span class="st">'column'</span>, alignItems: <span class="st">'center'</span> }}&gt;
+      &lt;<span class="ty">div</span> style={{ width: <span class="st">'100%'</span>, maxWidth: <span class="st">'448px'</span> }}&gt;
+        &lt;<span class="ty">main</span> style={{ padding: <span class="st">'20px 20px 100px'</span> }}&gt;
+          <span class="cm">{/* Your content here */}</span>
+        &lt;/<span class="ty">main</span>&gt;
+        &lt;<span class="ty">BottomNav</span> role={isCoach ? <span class="st">'coach'</span> : <span class="st">'player'</span>} /&gt;
+      &lt;/<span class="ty">div</span>&gt;
+    &lt;/<span class="ty">div</span>&gt;
+  );
+}</code></pre>
+  </li>
+</ol>
+
+<h3>Add a Nav Item</h3>
+<p>Open <code>src/components/BottomNav.tsx</code> and add to the relevant nav array:</p>
+<pre><code><span class="cm">// Add to playerNav or coachNav:</span>
+{ label: <span class="st">'Goals'</span>, icon: <span class="st">'flag'</span>, path: <span class="st">'/goals'</span> },</code></pre>
+
+<p>Icon names come from <a href="https://fonts.google.com/icons">fonts.google.com/icons</a> — search for the concept and use the exact identifier shown (e.g., <code>flag</code>, <code>sports_tennis</code>, <code>monitoring</code>).</p>
+
+<h3>Add a New Database Column</h3>
+
+<ol class="steps">
+  <li>Go to Supabase → Table Editor → select the table</li>
+  <li>Click "Insert column" → fill in name, type, default</li>
+  <li>Update the TypeScript type in <code>src/lib/supabase.ts</code></li>
+  <li>Use the new field in your query: <code>.select('id, name, new_column')</code></li>
+</ol>
+
+<h3>Change the Camp Duration</h3>
+
+<p>Edit <code>src/lib/program.ts</code>:</p>
+<ol>
+  <li>Change the phase boundaries (the <code>if (day >= 13)</code> conditions)</li>
+  <li>Update the <code>Array.from({ length: 42 }</code> to generate the right number of shared days</li>
+  <li>Update <code>getCampDay()</code> to use the new start date and cap at the new total days</li>
+</ol>
+
+<h3>Change the Color Theme</h3>
+
+<p>The entire app uses these 5 base colors. Change them consistently:</p>
+
+<table>
+  <thead><tr><th>Variable</th><th>Hex</th><th>Used for</th></tr></thead>
+  <tbody>
+    <tr><td>Background</td><td><code>#0f1511</code></td><td>Page background (very dark forest green)</td></tr>
+    <tr><td>Surface</td><td><code>#1b211d</code></td><td>Cards and containers</td></tr>
+    <tr><td>Border</td><td><code>#3d4a42</code></td><td>Dividers and card borders</td></tr>
+    <tr><td>Text</td><td><code>#dee4de</code></td><td>Primary text</td></tr>
+    <tr><td>Accent</td><td><code>#25a475</code></td><td>Buttons, active nav, highlights</td></tr>
+  </tbody>
+</table>
+
+<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+<div style="margin-top: 64px; padding-top: 24px; border-top: 1px solid #3d4a42; text-align: center;">
+  <p style="color: #5a6e60; font-size: 13px;">SMASH CAMP Developer Manual · Built with Next.js 15, Supabase, and Vercel</p>
+  <p style="color: #5a6e60; font-size: 12px; margin-top: 4px;">Print this page to PDF for an offline reference copy.</p>
+</div>
+
+</body>
+</html>
