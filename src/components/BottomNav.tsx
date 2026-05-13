@@ -5,15 +5,15 @@ type NavItem = { label: string; icon: string; path: string };
 
 const coachNav: NavItem[] = [
   { label: 'Dashboard', icon: 'dashboard', path: '/coach' },
-  { label: 'Training', icon: 'fitness_center', path: '/session/1' },
   { label: 'Calendar', icon: 'calendar_month', path: '/calendar' },
+  { label: 'Scores', icon: 'leaderboard', path: '/leaderboard' },
 ];
 
 const playerNav: NavItem[] = [
   { label: 'Dashboard', icon: 'dashboard', path: '/player' },
   { label: 'Training', icon: 'fitness_center', path: '/session/1' },
-  { label: 'Calendar', icon: 'calendar_month', path: '/calendar' },
   { label: 'Nutrition', icon: 'restaurant', path: '/nutrition' },
+  { label: 'Scores', icon: 'leaderboard', path: '/leaderboard' },
 ];
 
 export default function BottomNav({ role = 'player' }: { role?: 'coach' | 'player' }) {
