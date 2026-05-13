@@ -5,15 +5,16 @@ type NavItem = { label: string; icon: string; path: string };
 
 const coachNav: NavItem[] = [
   { label: 'Dashboard', icon: 'dashboard', path: '/coach' },
+  { label: 'Squad', icon: 'group', path: '/squad' },
   { label: 'Calendar', icon: 'calendar_month', path: '/calendar' },
   { label: 'Scores', icon: 'leaderboard', path: '/leaderboard' },
 ];
 
 const playerNav: NavItem[] = [
   { label: 'Dashboard', icon: 'dashboard', path: '/player' },
-  { label: 'Training', icon: 'fitness_center', path: '/session/1' },
+  { label: 'Program', icon: 'fitness_center', path: '/program' },
+  { label: 'Squad', icon: 'group', path: '/squad' },
   { label: 'Nutrition', icon: 'restaurant', path: '/nutrition' },
-  { label: 'Scores', icon: 'leaderboard', path: '/leaderboard' },
 ];
 
 export default function BottomNav({ role = 'player' }: { role?: 'coach' | 'player' }) {
@@ -32,7 +33,7 @@ export default function BottomNav({ role = 'player' }: { role?: 'coach' | 'playe
       padding: '12px 16px',
     }}>
       {items.map(item => {
-        const isActive = pathname === item.path || pathname.startsWith(item.path + '/');
+        const isActive = pathname === item.path || (item.path !== '/' && pathname.startsWith(item.path + '/'));
         return (
           <button
             key={item.path}
