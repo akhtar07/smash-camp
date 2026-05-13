@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SMASH CAMP — Player Manual</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #ffffff;
+      color: #1a1a1a;
+      line-height: 1.6;
+    }
+
+    .cover {
+      background: #0f1511;
+      color: white;
+      padding: 80px 60px;
+      min-height: 300px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      background: rgba(104,219,169,0.08);
+    }
+
+    .cover-badge {
+      display: inline-block;
+      background: rgba(104,219,169,0.15);
+      border: 1px solid rgba(104,219,169,0.3);
+      color: #68dba9;
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .cover h1 {
+      font-size: 52px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+
+    .cover h1 span { color: #68dba9; }
+
+    .cover p {
+      font-size: 18px;
+      color: #bccac0;
+      max-width: 480px;
+    }
+
+    .cover-meta {
+      margin-top: 48px;
+      display: flex;
+      gap: 32px;
+    }
+
+    .cover-meta-item { color: #87948b; font-size: 13px; }
+    .cover-meta-item strong { color: #dee4de; display: block; font-size: 15px; }
+
+    .content {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 60px 40px;
+    }
+
+    .toc {
+      background: #f8faf9;
+      border: 1px solid #e0e8e4;
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 56px;
+    }
+
+    .toc h2 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #87948b;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+    }
+
+    .toc ol {
+      list-style: none;
+      counter-reset: toc;
+    }
+
+    .toc ol li {
+      counter-increment: toc;
+      padding: 6px 0;
+      font-size: 15px;
+      color: #1a6b47;
+      font-weight: 500;
+      border-bottom: 1px solid #e8f0ec;
+    }
+
+    .toc ol li:last-child { border-bottom: none; }
+
+    .toc ol li::before {
+      content: counter(toc) ". ";
+      color: #68dba9;
+      font-weight: 700;
+    }
+
+    section { margin-bottom: 56px; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #e8f0ec;
+    }
+
+    .section-number {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: #0f1511;
+      color: #68dba9;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    h2 {
+      font-size: 26px;
+      font-weight: 800;
+      color: #0f1511;
+      letter-spacing: -0.02em;
+    }
+
+    h3 {
+      font-size: 17px;
+      font-weight: 700;
+      color: #0f1511;
+      margin-bottom: 10px;
+      margin-top: 24px;
+    }
+
+    p { font-size: 15px; color: #3d4a42; margin-bottom: 12px; line-height: 1.7; }
+
+    .step-list {
+      list-style: none;
+      counter-reset: steps;
+      margin: 16px 0;
+    }
+
+    .step-list li {
+      counter-increment: steps;
+      display: flex;
+      gap: 14px;
+      margin-bottom: 14px;
+      align-items: flex-start;
+    }
+
+    .step-list li::before {
+      content: counter(steps);
+      min-width: 28px; height: 28px;
+      border-radius: 50%;
+      background: #68dba9;
+      color: #002114;
+      font-size: 13px;
+      font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .step-list li span { font-size: 15px; color: #3d4a42; line-height: 1.6; }
+    .step-list li strong { color: #0f1511; }
+
+    .callout {
+      background: #f0faf6;
+      border: 1px solid #c8e8d8;
+      border-left: 4px solid #68dba9;
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      margin: 20px 0;
+    }
+
+    .callout.warning {
+      background: #fffbf0;
+      border-color: #ffd080;
+      border-left-color: #f59e0b;
+    }
+
+    .callout.info {
+      background: #f0f4ff;
+      border-color: #c7d7ff;
+      border-left-color: #adc6ff;
+    }
+
+    .callout p { margin: 0; font-size: 14px; }
+    .callout strong { color: #0f1511; }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .feature-card {
+      background: #f8faf9;
+      border: 1px solid #e0e8e4;
+      border-radius: 10px;
+      padding: 16px;
+    }
+
+    .feature-card .label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #68dba9;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+    }
+
+    .feature-card .title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f1511;
+      margin-bottom: 4px;
+    }
+
+    .feature-card p { font-size: 13px; color: #87948b; margin: 0; }
+
+    .phase-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 14px;
+    }
+
+    .phase-table th {
+      background: #0f1511;
+      color: #dee4de;
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .phase-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #e8f0ec;
+      color: #3d4a42;
+    }
+
+    .phase-table tr:nth-child(even) td { background: #f8faf9; }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .badge.green { background: rgba(104,219,169,0.15); color: #1a6b47; }
+    .badge.blue { background: rgba(173,198,255,0.15); color: #1a3a6b; }
+    .badge.orange { background: rgba(255,183,124,0.15); color: #7a3500; }
+    .badge.purple { background: rgba(212,168,255,0.15); color: #4a1a7a; }
+
+    .url-box {
+      background: #0f1511;
+      border-radius: 8px;
+      padding: 14px 20px;
+      margin: 16px 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .url-box .label { font-size: 11px; color: #87948b; font-weight: 700; text-transform: uppercase; }
+    .url-box .url { font-size: 18px; color: #68dba9; font-weight: 700; letter-spacing: 0.01em; }
+
+    .scoring-box {
+      background: #f8faf9;
+      border: 1px solid #e0e8e4;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 16px 0;
+    }
+
+    .scoring-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #e8f0ec;
+      font-size: 14px;
+    }
+
+    .scoring-row:last-child { border-bottom: none; }
+
+    footer {
+      background: #0f1511;
+      color: #87948b;
+      text-align: center;
+      padding: 32px;
+      font-size: 13px;
+      margin-top: 60px;
+    }
+
+    footer strong { color: #68dba9; }
+
+    @media print {
+      .cover { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .callout { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .section-number { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .step-list li::before { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .url-box { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-badge">🏸 Official Player Guide</div>
+  <h1>SMASH CAMP<br /><span>Player Manual</span></h1>
+  <p>Your complete guide to tracking attendance, training sessions, nutrition, and competing on the leaderboard.</p>
+  <div class="cover-meta">
+    <div class="cover-meta-item"><strong>Camp Duration</strong>45 Days</div>
+    <div class="cover-meta-item"><strong>App Access</strong>smash-camp.vercel.app</div>
+    <div class="cover-meta-item"><strong>Version</strong>1.0</div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc">
+    <h2>Table of Contents</h2>
+    <ol>
+      <li>Getting Started — Creating Your Account</li>
+      <li>Logging In</li>
+      <li>Your Dashboard — Home Screen</li>
+      <li>Marking Your Attendance</li>
+      <li>Training Program — All 45 Days</li>
+      <li>Daily Training Sessions</li>
+      <li>The Squad — See Your Teammates</li>
+      <li>Nutrition Tracker</li>
+      <li>Leaderboard & Scoring</li>
+      <li>Tips for Getting the Best Score</li>
+    </ol>
+  </div>
+
+  <!-- SECTION 1 -->
+  <section>
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <h2>Getting Started — Creating Your Account</h2>
+    </div>
+
+    <p>The SMASH CAMP app runs entirely in your phone's browser — no download required. Open any browser (Chrome, Safari) and go to:</p>
+
+    <div class="url-box">
+      <div>
+        <div class="label">App Website</div>
+        <div class="url">smash-camp.vercel.app</div>
+      </div>
+    </div>
+
+    <h3>Creating a New Account</h3>
+    <ol class="step-list">
+      <li><span>Open <strong>smash-camp.vercel.app</strong> in your browser.</span></li>
+      <li><span>You will see the login screen with two tabs at the top: <strong>Login</strong> and <strong>Sign Up</strong>. Tap <strong>Sign Up</strong>.</span></li>
+      <li><span>Enter your <strong>Full Name</strong> (e.g. Rahul Sharma). This is the name your teammates will see.</span></li>
+      <li><span>Enter your <strong>Email Address</strong>. Use an email you check regularly.</span></li>
+      <li><span>Create a <strong>Password</strong> — at least 6 characters. Remember this password.</span></li>
+      <li><span>Leave the <strong>Coach Code</strong> field empty — that is only for your coach.</span></li>
+      <li><span>Tap the green <strong>Create Account</strong> button.</span></li>
+      <li><span>You will be taken directly to your <strong>Player Dashboard</strong>. You are now registered!</span></li>
+    </ol>
+
+    <div class="callout">
+      <p><strong>✅ No email confirmation needed.</strong> Your account is active immediately after signing up. You do not need to check your email or click any link.</p>
+    </div>
+
+    <div class="callout warning">
+      <p><strong>⚠️ Save your password.</strong> There is no "forgot password" feature in this version. Write your password down or save it in your phone's notes so you don't forget it.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 2 -->
+  <section>
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <h2>Logging In</h2>
+    </div>
+
+    <ol class="step-list">
+      <li><span>Go to <strong>smash-camp.vercel.app</strong></span></li>
+      <li><span>The <strong>Login</strong> tab is selected by default.</span></li>
+      <li><span>Enter the <strong>Email</strong> and <strong>Password</strong> you used when signing up.</span></li>
+      <li><span>Tap <strong>Login</strong>. You will go to your Dashboard.</span></li>
+    </ol>
+
+    <div class="callout info">
+      <p><strong>💡 Tip:</strong> Add the app to your Home Screen. In Chrome tap the three dots (⋮) → "Add to Home Screen". In Safari tap the Share button → "Add to Home Screen". The app will then open like a normal app icon.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 3 -->
+  <section>
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <h2>Your Dashboard — Home Screen</h2>
+    </div>
+
+    <p>The Dashboard is the first screen you see after logging in. It gives you a complete overview of your day at a glance.</p>
+
+    <h3>What You See on the Dashboard</h3>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="label">Greeting</div>
+        <div class="title">Good Morning, [Name] 👋</div>
+        <p>Shows today's date, your current phase badge, and overall camp progress bar.</p>
+      </div>
+      <div class="feature-card">
+        <div class="label">Attendance</div>
+        <div class="title">I'm Here Button</div>
+        <p>Mark yourself as present for today. See your attendance % and total days attended.</p>
+      </div>
+      <div class="feature-card">
+        <div class="label">Stats Grid</div>
+        <div class="title">4 Key Numbers</div>
+        <p>Attendance %, Streak 🔥, Today's session %, and Average completion across all sessions.</p>
+      </div>
+      <div class="feature-card">
+        <div class="label">Today's Session</div>
+        <div class="title">Start Training</div>
+        <p>Preview today's exercises and start your session directly from this card.</p>
+      </div>
+    </div>
+
+    <h3>The Phase Color System</h3>
+    <p>The app changes color based on which training phase the camp is in:</p>
+    <table class="phase-table">
+      <thead>
+        <tr><th>Phase</th><th>Days</th><th>Color</th><th>Focus</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="badge green">Foundation</span></td><td>1 – 12</td><td>Green</td><td>Building base fitness</td></tr>
+        <tr><td><span class="badge blue">Build</span></td><td>13 – 26</td><td>Blue</td><td>Increasing intensity</td></tr>
+        <tr><td><span class="badge orange">Peak</span></td><td>27 – 38</td><td>Orange</td><td>Maximum performance</td></tr>
+        <tr><td><span class="badge purple">Taper</span></td><td>39 – 45</td><td>Purple</td><td>Recovery before competition</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Quick Access Buttons</h3>
+    <p>At the bottom of the Dashboard you will find three shortcuts: <strong>Program</strong>, <strong>Squad</strong>, and <strong>Nutrition</strong> — tap any to jump directly to that section.</p>
+  </section>
+
+  <!-- SECTION 4 -->
+  <section>
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <h2>Marking Your Attendance</h2>
+    </div>
+
+    <p>Attendance is worth 50% of your overall camp score, so this is important to do every day you come to training.</p>
+
+    <ol class="step-list">
+      <li><span>Open the app and go to your <strong>Dashboard</strong>.</span></li>
+      <li><span>Find the <strong>attendance card</strong> — it shows a map pin icon and the text "Mark Today's Attendance".</span></li>
+      <li><span>Tap the green <strong>"I'm Here"</strong> button.</span></li>
+      <li><span>The card will turn green and show <strong>"You're in! 🎉"</strong> — attendance is logged.</span></li>
+    </ol>
+
+    <div class="callout warning">
+      <p><strong>⚠️ Important:</strong> You can only log attendance once per day. Do this as soon as you arrive at the training venue. Once logged, the button disappears and shows your attendance stats instead.</p>
+    </div>
+
+    <div class="callout">
+      <p><strong>📅 Attendance Streak:</strong> If you attend on consecutive days, your 🔥 streak grows. A streak of 3+ days turns orange, 5+ days turns hot orange. Keep the streak alive!</p>
+    </div>
+  </section>
+
+  <!-- SECTION 5 -->
+  <section>
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <h2>Training Program — All 45 Days</h2>
+    </div>
+
+    <p>Tap <strong>Program</strong> in the bottom navigation bar to see the full 45-day training schedule.</p>
+
+    <h3>What You See</h3>
+    <ol class="step-list">
+      <li><span>A <strong>hero card</strong> at the top showing your current phase, today's day number, sessions logged, and days remaining. It has a <strong>"Start Today's Session"</strong> button.</span></li>
+      <li><span>The program is split into <strong>4 phase sections</strong> — Foundation, Build, Peak, Taper — each with a different color.</span></li>
+      <li><span>Each day card shows the <strong>day number</strong>, which blocks are in it (Warm-up · Main · Cool-down), and how many exercises.</span></li>
+      <li><span>Days you have completed show a <strong>green checkmark</strong> and your completion percentage.</span></li>
+      <li><span>Today's day has a glowing <strong>"TODAY"</strong> badge.</span></li>
+      <li><span>Future days are slightly dim but still tappable — you can preview what's coming.</span></li>
+    </ol>
+
+    <h3>How to Open Any Day's Session</h3>
+    <ol class="step-list">
+      <li><span>Scroll to find the day you want.</span></li>
+      <li><span>Tap the day card — it will open the full session page.</span></li>
+      <li><span>You can complete exercises from any day, not just today. But your coach tracks today's completions in real time.</span></li>
+    </ol>
+  </section>
+
+  <!-- SECTION 6 -->
+  <section>
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <h2>Daily Training Sessions</h2>
+    </div>
+
+    <p>The Session page is where you track your actual training. Each session is divided into three blocks.</p>
+
+    <h3>Session Blocks</h3>
+    <table class="phase-table">
+      <thead><tr><th>Block</th><th>Purpose</th><th>Typical Duration</th></tr></thead>
+      <tbody>
+        <tr><td>🔥 Warm-up</td><td>Prepare joints and activate muscles</td><td>10–15 min</td></tr>
+        <tr><td>💪 Main</td><td>Core strength and badminton drills</td><td>30–45 min</td></tr>
+        <tr><td>🧘 Cool-down</td><td>Stretching and recovery</td><td>10 min</td></tr>
+      </tbody>
+    </table>
+
+    <h3>How to Use the Session Page</h3>
+    <ol class="step-list">
+      <li><span>Open a session from the Dashboard or Program page.</span></li>
+      <li><span>At the top you see a <strong>progress bar</strong> showing how many exercises you have completed vs total.</span></li>
+      <li><span>Each exercise card shows: <strong>name</strong>, sets, reps, rest time, RPE (effort level), and a coaching cue.</span></li>
+      <li><span>Tap the <strong>circle button</strong> on the left of an exercise to mark it as done. The card turns dark green with a strikethrough.</span></li>
+      <li><span>Tap the red <strong>"Watch" button</strong> to open a YouTube search for that exercise — see how to do it correctly.</span></li>
+      <li><span>Your progress is saved automatically to the app — your coach can see your completion % in real time.</span></li>
+      <li><span>When all exercises are done, a <strong>"Session Complete! 🏆"</strong> celebration screen appears.</span></li>
+    </ol>
+
+    <div class="callout">
+      <p><strong>💡 RPE Guide:</strong> RPE means Rate of Perceived Exertion on a scale of 1–10. RPE 4 = easy warmup. RPE 7 = hard but manageable. RPE 9 = near maximum effort. Train at the number shown for best results.</p>
+    </div>
+
+    <h3>Watch Button (YouTube)</h3>
+    <p>Every exercise has a red <strong>Watch</strong> button in the top-right corner of the card. Tapping it opens YouTube search results showing how to perform that exercise correctly. Always watch if you are unsure about form.</p>
+  </section>
+
+  <!-- SECTION 7 -->
+  <section>
+    <div class="section-header">
+      <div class="section-number">7</div>
+      <h2>The Squad — See Your Teammates</h2>
+    </div>
+
+    <p>Tap <strong>Squad</strong> from the Dashboard quick access buttons to see everyone in the camp.</p>
+
+    <h3>What You See</h3>
+    <ol class="step-list">
+      <li><span>Three stats at the top: <strong>Total Players</strong>, <strong>Here Today</strong> (who marked attendance), and <strong>Top Streak</strong> in the squad.</span></li>
+      <li><span>A <strong>"Training Today"</strong> section showing avatar circles for every player who has marked attendance today — green border = present.</span></li>
+      <li><span>The <strong>Full Roster</strong> list sorted by score, showing each player's: streak 🔥, days attended, and average session completion %.</span></li>
+    </ol>
+
+    <div class="callout info">
+      <p><strong>👥 Social motivation:</strong> When you see teammates training, it builds accountability. Use this to push yourself — if someone else is showing up and logging sessions, you should too!</p>
+    </div>
+  </section>
+
+  <!-- SECTION 8 -->
+  <section>
+    <div class="section-header">
+      <div class="section-number">8</div>
+      <h2>Nutrition Tracker</h2>
+    </div>
+
+    <p>Tap <strong>Nutrition</strong> in the bottom navigation bar. The camp has a 6-meal protocol and a daily hydration goal of 3 litres.</p>
+
+    <h3>Logging Meals</h3>
+    <ol class="step-list">
+      <li><span>Open the Nutrition page.</span></li>
+      <li><span>You will see 6 meal cards for the day, each with a specific time, food recommendation, and a coaching tip.</span></li>
+      <li><span>After eating a meal, tap the green <strong>"Log Meal"</strong> button on that card.</span></li>
+      <li><span>The card turns green with a checkmark. The circular progress ring at the top updates.</span></li>
+      <li><span>When all 6 meals are logged the header shows <strong>"Perfect day! 🎉"</strong></span></li>
+    </ol>
+
+    <h3>The 6-Meal Schedule</h3>
+    <table class="phase-table">
+      <thead><tr><th>Time</th><th>Meal</th><th>Foods</th></tr></thead>
+      <tbody>
+        <tr><td>05:15 AM</td><td>Pre-workout</td><td>Banana + oats + coffee</td></tr>
+        <tr><td>08:15 AM</td><td>Recovery Meal</td><td>Eggs / paneer + rice</td></tr>
+        <tr><td>11:00 AM</td><td>Snack</td><td>Greek yogurt + nuts</td></tr>
+        <tr><td>01:30 PM</td><td>Lunch</td><td>Rice + dal + chicken / paneer</td></tr>
+        <tr><td>05:00 PM</td><td>Evening Snack</td><td>Smoothie + fruit</td></tr>
+        <tr><td>08:00 PM</td><td>Dinner</td><td>Chapati + protein + salad</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Hydration Tracking</h3>
+    <ol class="step-list">
+      <li><span>The hydration card on the right shows your current water intake vs the 3L goal.</span></li>
+      <li><span>Every time you drink a glass of water (approximately 250ml), tap the <strong>"+250ml"</strong> button.</span></li>
+      <li><span>The blue progress bar fills up as you drink.</span></li>
+      <li><span>When you reach 3L, the button changes to <strong>"Goal reached! ✓"</strong></span></li>
+    </ol>
+
+    <div class="callout warning">
+      <p><strong>⚠️ Note:</strong> Nutrition tracking does NOT affect your leaderboard score. It is for your own health and your coach's visibility. But good nutrition directly improves your training completion, which does affect your score!</p>
+    </div>
+  </section>
+
+  <!-- SECTION 9 -->
+  <section>
+    <div class="section-header">
+      <div class="section-number">9</div>
+      <h2>Leaderboard & Scoring</h2>
+    </div>
+
+    <p>Tap <strong>Scores</strong> in the bottom navigation bar to see the full camp rankings.</p>
+
+    <h3>How Your Score is Calculated</h3>
+    <div class="scoring-box">
+      <div class="scoring-row">
+        <span><strong>Attendance %</strong> — how many days you showed up</span>
+        <span>50%</span>
+      </div>
+      <div class="scoring-row">
+        <span><strong>Average Session Completion %</strong> — how many exercises you complete each day</span>
+        <span>50%</span>
+      </div>
+      <div class="scoring-row" style="background:#f0faf6; font-weight:700;">
+        <span>Final Score</span>
+        <span>(Attendance % × 0.5) + (Completion % × 0.5)</span>
+      </div>
+    </div>
+
+    <h3>Example</h3>
+    <p>If you attended 30 out of 35 days (86% attendance) and completed an average of 70% of your exercises, your score is: <strong>(86 × 0.5) + (70 × 0.5) = 43 + 35 = 78</strong></p>
+
+    <h3>What You See on the Leaderboard</h3>
+    <ol class="step-list">
+      <li><span>The <strong>MVP card</strong> at the top shows the #1 ranked player with their attendance and completion breakdown.</span></li>
+      <li><span>If you are not #1, a <strong>"Your Rank"</strong> card appears right below the MVP showing your position and score.</span></li>
+      <li><span>The full rankings list shows all players. Your row is highlighted in green with <strong>(You)</strong> next to your name.</span></li>
+      <li><span>Each row shows a dual-color bar — green = attendance contribution, blue = completion contribution.</span></li>
+      <li><span>Top 3 players get 🥇🥈🥉 medal badges.</span></li>
+    </ol>
+  </section>
+
+  <!-- SECTION 10 -->
+  <section>
+    <div class="section-header">
+      <div class="section-number">10</div>
+      <h2>Tips for Getting the Best Score</h2>
+    </div>
+
+    <ol class="step-list">
+      <li><span><strong>Show up every day.</strong> Attendance is 50% of your score. Even if you feel tired, marking yourself present and doing a partial session is better than not showing up.</span></li>
+      <li><span><strong>Complete all exercises in a session.</strong> The completion % is the average of all sessions logged. Even 80% completion each day adds up significantly.</span></li>
+      <li><span><strong>Log attendance first thing.</strong> When you arrive at the venue, the first thing you do is open the app and tap "I'm Here". Don't forget — you cannot add attendance after the fact.</span></li>
+      <li><span><strong>Maintain your streak.</strong> Consecutive days build a 🔥 streak. Keep it going for motivation and to signal commitment to your coach.</span></li>
+      <li><span><strong>Watch the YouTube tutorials.</strong> Use the red Watch button if you are unsure how to perform an exercise. Correct form = better training = better results.</span></li>
+      <li><span><strong>Check the Squad page.</strong> When you see teammates showing up and completing sessions, use that as motivation to push harder.</span></li>
+      <li><span><strong>Eat and drink on schedule.</strong> Even though nutrition doesn't affect the score directly, proper fuelling means you can complete more exercises at higher intensity.</span></li>
+    </ol>
+  </section>
+
+</div>
+
+<footer>
+  <strong>SMASH CAMP</strong> · Player Manual · For support contact your coach<br />
+  App: smash-camp.vercel.app
+</footer>
+
+</body>
+</html>

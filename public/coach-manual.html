@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SMASH CAMP — Coach Manual</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #ffffff;
+      color: #1a1a1a;
+      line-height: 1.6;
+    }
+
+    .cover {
+      background: #0f1511;
+      color: white;
+      padding: 80px 60px;
+      min-height: 300px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      background: rgba(255,183,124,0.08);
+    }
+
+    .cover-badge {
+      display: inline-block;
+      background: rgba(255,183,124,0.15);
+      border: 1px solid rgba(255,183,124,0.3);
+      color: #ffb77c;
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .cover h1 {
+      font-size: 52px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+
+    .cover h1 span { color: #ffb77c; }
+    .cover p { font-size: 18px; color: #bccac0; max-width: 480px; }
+
+    .cover-meta { margin-top: 48px; display: flex; gap: 32px; }
+    .cover-meta-item { color: #87948b; font-size: 13px; }
+    .cover-meta-item strong { color: #dee4de; display: block; font-size: 15px; }
+
+    .content { max-width: 720px; margin: 0 auto; padding: 60px 40px; }
+
+    .toc {
+      background: #fff8f2;
+      border: 1px solid #ffe0c0;
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 56px;
+    }
+
+    .toc h2 { font-size: 13px; font-weight: 700; color: #7a3500; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+
+    .toc ol { list-style: none; counter-reset: toc; }
+
+    .toc ol li {
+      counter-increment: toc;
+      padding: 6px 0;
+      font-size: 15px;
+      color: #7a3500;
+      font-weight: 500;
+      border-bottom: 1px solid #ffe8d0;
+    }
+
+    .toc ol li:last-child { border-bottom: none; }
+    .toc ol li::before { content: counter(toc) ". "; color: #ffb77c; font-weight: 700; }
+
+    section { margin-bottom: 56px; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #ffe8d0;
+    }
+
+    .section-number {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: #0f1511;
+      color: #ffb77c;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    h2 { font-size: 26px; font-weight: 800; color: #0f1511; letter-spacing: -0.02em; }
+    h3 { font-size: 17px; font-weight: 700; color: #0f1511; margin-bottom: 10px; margin-top: 24px; }
+    p { font-size: 15px; color: #3d4a42; margin-bottom: 12px; line-height: 1.7; }
+
+    .step-list { list-style: none; counter-reset: steps; margin: 16px 0; }
+
+    .step-list li {
+      counter-increment: steps;
+      display: flex;
+      gap: 14px;
+      margin-bottom: 14px;
+      align-items: flex-start;
+    }
+
+    .step-list li::before {
+      content: counter(steps);
+      min-width: 28px; height: 28px;
+      border-radius: 50%;
+      background: #ffb77c;
+      color: #3d1800;
+      font-size: 13px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .step-list li span { font-size: 15px; color: #3d4a42; line-height: 1.6; }
+    .step-list li strong { color: #0f1511; }
+
+    .callout {
+      background: #fff8f2;
+      border: 1px solid #ffe0c0;
+      border-left: 4px solid #ffb77c;
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      margin: 20px 0;
+    }
+
+    .callout.green {
+      background: #f0faf6;
+      border-color: #c8e8d8;
+      border-left-color: #68dba9;
+    }
+
+    .callout.danger {
+      background: #fff0f0;
+      border-color: #ffcccc;
+      border-left-color: #ff6b6b;
+    }
+
+    .callout.info {
+      background: #f0f4ff;
+      border-color: #c7d7ff;
+      border-left-color: #adc6ff;
+    }
+
+    .callout p { margin: 0; font-size: 14px; }
+    .callout strong { color: #0f1511; }
+
+    .code-block {
+      background: #0f1511;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin: 16px 0;
+      overflow-x: auto;
+    }
+
+    .code-block pre {
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      color: #dee4de;
+      line-height: 1.8;
+      white-space: pre;
+    }
+
+    .code-block .comment { color: #87948b; }
+    .code-block .key { color: #adc6ff; }
+    .code-block .value { color: #68dba9; }
+    .code-block .string { color: #ffb77c; }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .feature-card {
+      background: #f8faf9;
+      border: 1px solid #e0e8e4;
+      border-radius: 10px;
+      padding: 16px;
+    }
+
+    .feature-card .label { font-size: 11px; font-weight: 700; color: #ffb77c; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+    .feature-card .title { font-size: 15px; font-weight: 700; color: #0f1511; margin-bottom: 4px; }
+    .feature-card p { font-size: 13px; color: #87948b; margin: 0; }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 14px;
+    }
+
+    .data-table th {
+      background: #0f1511;
+      color: #dee4de;
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .data-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #e8f0ec;
+      color: #3d4a42;
+    }
+
+    .data-table tr:nth-child(even) td { background: #f8faf9; }
+
+    .url-box {
+      background: #0f1511;
+      border-radius: 8px;
+      padding: 14px 20px;
+      margin: 16px 0;
+    }
+
+    .url-box .label { font-size: 11px; color: #87948b; font-weight: 700; text-transform: uppercase; }
+    .url-box .url { font-size: 18px; color: #ffb77c; font-weight: 700; }
+
+    .secret-box {
+      background: #1a0a00;
+      border: 1px solid rgba(255,183,124,0.3);
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin: 16px 0;
+      text-align: center;
+    }
+
+    .secret-box .label { font-size: 11px; color: #87948b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+    .secret-box .code { font-size: 28px; font-weight: 800; color: #ffb77c; letter-spacing: 0.1em; font-family: monospace; }
+
+    .nav-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
+
+    .nav-item {
+      background: #f8faf9;
+      border: 1px solid #e0e8e4;
+      border-radius: 8px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #0f1511;
+    }
+
+    .nav-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .inline-code {
+      background: #f0f0f0;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-family: monospace;
+      font-size: 13px;
+      color: #1a1a1a;
+    }
+
+    footer {
+      background: #0f1511;
+      color: #87948b;
+      text-align: center;
+      padding: 32px;
+      font-size: 13px;
+      margin-top: 60px;
+    }
+
+    footer strong { color: #ffb77c; }
+
+    @media print {
+      .cover { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .callout { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .section-number { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .step-list li::before { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .code-block { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .secret-box { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .url-box { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-badge">🏸 Official Coach Guide</div>
+  <h1>SMASH CAMP<br /><span>Coach Manual</span></h1>
+  <p>Complete guide for coaches — from login to managing players, monitoring performance, and updating the training program.</p>
+  <div class="cover-meta">
+    <div class="cover-meta-item"><strong>Camp Duration</strong>45 Days</div>
+    <div class="cover-meta-item"><strong>App Access</strong>smash-camp.vercel.app</div>
+    <div class="cover-meta-item"><strong>Coach Code</strong>SMASHCOACH2025</div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc">
+    <h2>Table of Contents</h2>
+    <ol>
+      <li>Creating Your Coach Account</li>
+      <li>Logging In & Logging Out</li>
+      <li>Coach Dashboard Overview</li>
+      <li>Monitoring Today's Attendance</li>
+      <li>Viewing Individual Player Stats</li>
+      <li>Squad Page — Full Roster Overview</li>
+      <li>Calendar Page — Attendance History</li>
+      <li>Leaderboard & Scoring System</li>
+      <li>How to Add or Edit Exercises in Any Day</li>
+      <li>Understanding the Database (Supabase)</li>
+      <li>Troubleshooting Common Issues</li>
+    </ol>
+  </div>
+
+  <!-- SECTION 1 -->
+  <section>
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <h2>Creating Your Coach Account</h2>
+    </div>
+
+    <p>Coach accounts are protected by a secret code. Only people with the code can register as a coach.</p>
+
+    <div class="secret-box">
+      <div class="label">Coach Registration Code</div>
+      <div class="code">SMASHCOACH2025</div>
+    </div>
+
+    <div class="url-box">
+      <div class="label">App Website</div>
+      <div class="url">smash-camp.vercel.app</div>
+    </div>
+
+    <ol class="step-list">
+      <li><span>Open <strong>smash-camp.vercel.app</strong> in your browser.</span></li>
+      <li><span>Tap the <strong>Sign Up</strong> tab at the top of the login screen.</span></li>
+      <li><span>Enter your <strong>Full Name</strong>, <strong>Email Address</strong>, and a <strong>Password</strong>.</span></li>
+      <li><span>In the <strong>Coach Code</strong> field, type: <strong>SMASHCOACH2025</strong> (all caps, no spaces).</span></li>
+      <li><span>Tap <strong>Create Account</strong>. You will be taken directly to the <strong>Coach Dashboard</strong>.</span></li>
+    </ol>
+
+    <div class="callout danger">
+      <p><strong>🔒 Keep the coach code private.</strong> Do not share SMASHCOACH2025 with players. If a player enters this code, they will get a coach account and see all player data. Only share it with fellow coaches.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 2 -->
+  <section>
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <h2>Logging In & Logging Out</h2>
+    </div>
+
+    <h3>Logging In</h3>
+    <ol class="step-list">
+      <li><span>Go to <strong>smash-camp.vercel.app</strong></span></li>
+      <li><span>Enter your <strong>Email</strong> and <strong>Password</strong> on the Login tab.</span></li>
+      <li><span>Tap <strong>Login</strong> — you go straight to the Coach Dashboard.</span></li>
+    </ol>
+
+    <h3>Logging Out</h3>
+    <ol class="step-list">
+      <li><span>From any screen, tap the <strong>logout icon</strong> (arrow pointing right) in the top-right corner of the header bar.</span></li>
+      <li><span>You will be returned to the login screen.</span></li>
+    </ol>
+
+    <div class="callout info">
+      <p><strong>💡 Stay logged in:</strong> The app keeps you logged in between sessions. You don't need to log in every time you open the app, as long as you don't tap logout.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 3 -->
+  <section>
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <h2>Coach Dashboard Overview</h2>
+    </div>
+
+    <p>The Coach Dashboard gives you a real-time snapshot of today's training session. It updates automatically as players log attendance and complete exercises.</p>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="label">Hero Section</div>
+        <div class="title">Good Morning, [Name] 🏸</div>
+        <p>Today's date, current training phase, and camp progress bar.</p>
+      </div>
+      <div class="feature-card">
+        <div class="label">Stats Grid</div>
+        <div class="title">Present / Absent / Avg Done</div>
+        <p>Real-time counts. Colors change: green = all good, yellow = partial, red = low attendance.</p>
+      </div>
+      <div class="feature-card">
+        <div class="label">Attendance Bar</div>
+        <div class="title">Today's Attendance %</div>
+        <p>Visual bar showing what percentage of the squad is present today.</p>
+      </div>
+      <div class="feature-card">
+        <div class="label">Roll Call</div>
+        <div class="title">Avatar Bubbles</div>
+        <p>Green border = present, grey = absent. Tap any avatar to open that player's detail page.</p>
+      </div>
+    </div>
+
+    <h3>Squad Roster (bottom of dashboard)</h3>
+    <p>Below the roll call is a full list of all players sorted by present first, then by completion %. Each card shows:</p>
+    <ul style="margin: 12px 0 12px 20px; color: #3d4a42; font-size: 15px; line-height: 2;">
+      <li>Player avatar with green/grey presence dot</li>
+      <li>Player name</li>
+      <li>Today's session completion % and color-coded progress bar</li>
+      <li>A right arrow (→) to go to their full detail page</li>
+    </ul>
+
+    <h3>Coach Navigation Bar</h3>
+    <p>The bottom navigation bar has 4 tabs for coaches:</p>
+    <div class="nav-grid">
+      <div class="nav-item"><div class="nav-dot" style="background:#ffb77c"></div>Dashboard — Today's overview</div>
+      <div class="nav-item"><div class="nav-dot" style="background:#adc6ff"></div>Squad — Full player roster</div>
+      <div class="nav-item"><div class="nav-dot" style="background:#68dba9"></div>Calendar — Attendance history</div>
+      <div class="nav-item"><div class="nav-dot" style="background:#ffd700"></div>Scores — Full leaderboard</div>
+    </div>
+  </section>
+
+  <!-- SECTION 4 -->
+  <section>
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <h2>Monitoring Today's Attendance</h2>
+    </div>
+
+    <p>Players log their own attendance by tapping "I'm Here" on their Dashboard. As coach you can monitor this in real time.</p>
+
+    <h3>How to Check Who Is Present</h3>
+    <ol class="step-list">
+      <li><span>Open your <strong>Coach Dashboard</strong>.</span></li>
+      <li><span>Look at the <strong>stats grid</strong> at the top — it shows how many are present vs absent right now.</span></li>
+      <li><span>Look at the <strong>Roll Call section</strong> — every player's avatar shows a green dot if present, grey if absent.</span></li>
+      <li><span>To see a player's full attendance history, tap their avatar or their name in the roster list.</span></li>
+    </ol>
+
+    <div class="callout">
+      <p><strong>📋 Note for coaches:</strong> You cannot manually mark a player as present from the coach interface. Players must mark their own attendance on their own device using the "I'm Here" button. If a player forgot to mark attendance, ask them to open the app and do it themselves — they can mark it any time on the same day.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 5 -->
+  <section>
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <h2>Viewing Individual Player Stats</h2>
+    </div>
+
+    <p>You can tap any player (from the Dashboard roster, Squad page, or Roll Call) to see their detailed stats page.</p>
+
+    <h3>What the Player Detail Page Shows</h3>
+    <ol class="step-list">
+      <li><span>A header with the <strong>player's name</strong> and a <strong>PRESENT / ABSENT</strong> badge for today.</span></li>
+      <li><span>Three stat cards: <strong>Attendance %</strong> (days present / camp days so far), <strong>Avg Completion %</strong> (average across all sessions), and <strong>Camp Day</strong> counter.</span></li>
+      <li><span>A complete <strong>Session History</strong> list showing every session the player has logged, with the date and their completion % for that day. Color coded: green = 80%+, blue = 50–79%, red = below 50%.</span></li>
+    </ol>
+
+    <h3>How to Access a Player's Page</h3>
+    <ol class="step-list">
+      <li><span>From the <strong>Coach Dashboard</strong>, tap any player row in the Squad Roster list.</span></li>
+      <li><span><strong>OR</strong> from the <strong>Squad tab</strong>, tap any player card.</span></li>
+      <li><span><strong>OR</strong> from the <strong>Roll Call</strong> section on the dashboard, tap any avatar bubble.</span></li>
+      <li><span>To go back, tap the <strong>← arrow</strong> in the top-left corner.</span></li>
+    </ol>
+  </section>
+
+  <!-- SECTION 6 -->
+  <section>
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <h2>Squad Page — Full Roster Overview</h2>
+    </div>
+
+    <p>Tap <strong>Squad</strong> in the bottom nav to see the full social view of all players.</p>
+
+    <h3>What the Squad Page Shows</h3>
+    <ul style="margin: 12px 0 12px 20px; color: #3d4a42; font-size: 15px; line-height: 2;">
+      <li><strong>3 stats</strong> at the top: Total Players, Here Today, Top Streak</li>
+      <li><strong>"Training Today"</strong> section: avatar circles for players who are present right now</li>
+      <li><strong>Full Roster list</strong>: ranked by score, showing streak 🔥, days attended, avg completion</li>
+    </ul>
+
+    <p>As a coach, tapping any player card takes you to their individual detail page. Players cannot tap each other's cards (they see stats but cannot navigate to detail pages — that is coach-only).</p>
+  </section>
+
+  <!-- SECTION 7 -->
+  <section>
+    <div class="section-header">
+      <div class="section-number">7</div>
+      <h2>Calendar Page — Attendance History</h2>
+    </div>
+
+    <p>Tap <strong>Calendar</strong> in the bottom nav to see your own attendance calendar (as a coach your personal attendance is tracked here).</p>
+
+    <div class="callout info">
+      <p><strong>💡 Note:</strong> The Calendar page shows the logged-in user's attendance. When a coach views it, it shows the coach's own attendance (if they marked it). To view a player's attendance calendar, use the Player Detail page instead.</p>
+    </div>
+
+    <h3>Reading the Calendar</h3>
+    <ul style="margin: 12px 0 12px 20px; color: #3d4a42; font-size: 15px; line-height: 2;">
+      <li><strong>Green cell with dot</strong> = Present that day</li>
+      <li><strong>Dark cell</strong> = Absent (camp day that has passed)</li>
+      <li><strong>Bright green cell</strong> = Today</li>
+      <li><strong>Faded cell</strong> = Future day</li>
+    </ul>
+
+    <p>Use the <strong>← →</strong> arrows at the top of the calendar to navigate between months. The stats at the top show: Attendance %, days present, days left in camp, and current camp day number.</p>
+  </section>
+
+  <!-- SECTION 8 -->
+  <section>
+    <div class="section-header">
+      <div class="section-number">8</div>
+      <h2>Leaderboard & Scoring System</h2>
+    </div>
+
+    <p>Tap <strong>Scores</strong> in the bottom nav to see the full camp rankings.</p>
+
+    <h3>How Scores Are Calculated</h3>
+    <table class="data-table">
+      <thead><tr><th>Component</th><th>Weight</th><th>How It's Measured</th></tr></thead>
+      <tbody>
+        <tr><td>Attendance %</td><td>50%</td><td>Days present ÷ Total camp days so far × 100</td></tr>
+        <tr><td>Average Completion %</td><td>50%</td><td>Average of all session completion %s logged</td></tr>
+        <tr><td><strong>Final Score</strong></td><td>100</td><td>(Attendance% × 0.5) + (AvgCompletion% × 0.5)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout green">
+      <p><strong>✅ As a coach:</strong> To motivate players, remind them that showing up AND completing exercises are equally important. A player who attends every day but doesn't complete exercises will score the same as a player who never shows up but completes 100% when they do attend.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 9 — THE BIG ONE -->
+  <section>
+    <div class="section-header">
+      <div class="section-number">9</div>
+      <h2>How to Add or Edit Exercises in Any Day</h2>
+    </div>
+
+    <p>The training program for all 45 days is stored in a single file in the GitHub repository. You can edit this file directly on GitHub — no coding experience required. Changes deploy automatically to the live app within 1–2 minutes.</p>
+
+    <div class="callout">
+      <p><strong>📁 File location:</strong> The file you need to edit is at <span class="inline-code">src/lib/program.ts</span> in the GitHub repository at <strong>github.com/akhtar07/smash-camp</strong></p>
+    </div>
+
+    <h3>Step 1 — Open the File on GitHub</h3>
+    <ol class="step-list">
+      <li><span>Open a browser and go to <strong>github.com/akhtar07/smash-camp</strong></span></li>
+      <li><span>You need to be logged in to a GitHub account that has write access to this repository. Ask the developer to add you as a collaborator if needed.</span></li>
+      <li><span>Click the <strong>src</strong> folder → then <strong>lib</strong> folder → then click the file <strong>program.ts</strong></span></li>
+      <li><span>You will see the full program file. Click the <strong>pencil icon ✏️</strong> in the top-right area of the file to edit it.</span></li>
+    </ol>
+
+    <h3>Step 2 — Understanding the File Structure</h3>
+    <p>Each exercise follows this exact format:</p>
+
+    <div class="code-block">
+      <pre><span class="comment">// Each exercise looks like this:</span>
+{
+  <span class="key">name</span>: <span class="string">"Push-ups"</span>,
+  <span class="key">sets</span>: <span class="string">"3"</span>,
+  <span class="key">reps</span>: <span class="string">"12 reps"</span>,
+  <span class="key">rest</span>: <span class="string">"60s"</span>,
+  <span class="key">rpe</span>: <span class="string">"7"</span>,
+  <span class="key">cue</span>: <span class="string">"Keep your body straight and elbows at 45 degrees."</span>,
+  <span class="key">url</span>: <span class="string">"https://www.youtube.com/results?search_query=push+up+form"</span>
+}</pre>
+    </div>
+
+    <p>Each field means:</p>
+    <table class="data-table">
+      <thead><tr><th>Field</th><th>What to Write</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><strong>name</strong></td><td>The exercise name exactly as you want it displayed</td><td>"Goblet squat"</td></tr>
+        <tr><td><strong>sets</strong></td><td>Number of sets as a text</td><td>"3" or "4"</td></tr>
+        <tr><td><strong>reps</strong></td><td>Reps or duration</td><td>"10 reps" or "45 sec"</td></tr>
+        <tr><td><strong>rest</strong></td><td>Rest time between sets</td><td>"90s" or "-" for none</td></tr>
+        <tr><td><strong>rpe</strong></td><td>Effort level from 1–10</td><td>"7" or "6-8"</td></tr>
+        <tr><td><strong>cue</strong></td><td>Coaching instruction for the player</td><td>"Drive through your heels."</td></tr>
+        <tr><td><strong>url</strong></td><td>YouTube search link (optional)</td><td>"https://www.youtube.com/results?search_query=..."</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Step 3 — How Days Are Organised in the File</h3>
+    <p>Days 1, 2, and 3 have their own unique exercise blocks defined as <span class="inline-code">day1</span>, <span class="inline-code">day2</span>, and <span class="inline-code">day3</span> near the top of the file. Days 4–45 use shared default blocks (Foundation/Build/Peak/Taper phases).</p>
+
+    <p>A full day block looks like this:</p>
+    <div class="code-block">
+      <pre><span class="comment">// Example: How Day 2 is structured</span>
+<span class="key">const</span> <span class="value">day2</span>: DayProgram = {
+  <span class="key">day</span>: <span class="value">2</span>, <span class="key">phase</span>: <span class="string">"Foundation"</span>, <span class="key">color</span>: <span class="string">"emerald"</span>,
+  <span class="key">blocks</span>: [
+    {
+      <span class="key">block</span>: <span class="string">"Warm-up"</span>,
+      <span class="key">exercises</span>: [
+        { <span class="key">name</span>: <span class="string">"Skipping rope"</span>, <span class="key">sets</span>: <span class="string">"3"</span>, <span class="key">reps</span>: <span class="string">"1 min"</span>,
+          <span class="key">rest</span>: <span class="string">"30s"</span>, <span class="key">rpe</span>: <span class="string">"4"</span>, <span class="key">cue</span>: <span class="string">"Stay light on feet."</span>,
+          <span class="key">url</span>: <span class="string">"https://www.youtube.com/results?search_query=skipping+rope"</span> }
+      ]
+    },
+    {
+      <span class="key">block</span>: <span class="string">"Main"</span>,
+      <span class="key">exercises</span>: [
+        { <span class="key">name</span>: <span class="string">"Goblet squat"</span>, <span class="key">sets</span>: <span class="string">"3"</span>, <span class="key">reps</span>: <span class="string">"10"</span>,
+          <span class="key">rest</span>: <span class="string">"90s"</span>, <span class="key">rpe</span>: <span class="string">"6-7"</span>, <span class="key">cue</span>: <span class="string">"Knees track over toes."</span>,
+          <span class="key">url</span>: <span class="string">"https://www.youtube.com/results?search_query=goblet+squat"</span> }
+      ]
+    },
+    {
+      <span class="key">block</span>: <span class="string">"Cool-down"</span>,
+      <span class="key">exercises</span>: [
+        { <span class="key">name</span>: <span class="string">"Couch stretch"</span>, <span class="key">sets</span>: <span class="string">"2"</span>, <span class="key">reps</span>: <span class="string">"45s"</span>,
+          <span class="key">rest</span>: <span class="string">"-"</span>, <span class="key">rpe</span>: <span class="string">"2"</span>, <span class="key">cue</span>: <span class="string">"Relax and breathe."</span>,
+          <span class="key">url</span>: <span class="string">"https://www.youtube.com/results?search_query=couch+stretch"</span> }
+      ]
+    }
+  ]
+};</pre>
+    </div>
+
+    <h3>Step 4 — Adding a New Exercise to an Existing Day</h3>
+    <ol class="step-list">
+      <li><span>Find the day you want to edit. For Day 1, look for <span class="inline-code">const day1</span>. For Day 2, look for <span class="inline-code">const day2</span>.</span></li>
+      <li><span>Find the block you want to add to — <strong>"Warm-up"</strong>, <strong>"Main"</strong>, or <strong>"Cool-down"</strong>.</span></li>
+      <li><span>Inside that block's <span class="inline-code">exercises: [...]</span> array, go to the end of the last exercise entry (after its closing <span class="inline-code">}</span>) and add a comma.</span></li>
+      <li><span>Then type your new exercise in the format shown above.</span></li>
+    </ol>
+
+    <div class="code-block">
+      <pre><span class="comment">// Example: Adding a new exercise to Day 2 Main block</span>
+{
+  <span class="key">block</span>: <span class="string">"Main"</span>,
+  <span class="key">exercises</span>: [
+    { <span class="key">name</span>: <span class="string">"Goblet squat"</span>, ... },   <span class="comment">← existing exercise</span>
+    { <span class="key">name</span>: <span class="string">"Romanian deadlift"</span>, ... }, <span class="comment">← existing exercise</span>
+    { <span class="key">name</span>: <span class="string">"Box jump"</span>, <span class="key">sets</span>: <span class="string">"3"</span>, <span class="key">reps</span>: <span class="string">"8 reps"</span>,
+      <span class="key">rest</span>: <span class="string">"90s"</span>, <span class="key">rpe</span>: <span class="string">"8"</span>,
+      <span class="key">cue</span>: <span class="string">"Land softly, absorb with knees bent."</span>,
+      <span class="key">url</span>: <span class="string">"https://www.youtube.com/results?search_query=box+jump+tutorial"</span> }
+    <span class="comment">↑ new exercise added at the end</span>
+  ]
+}</pre>
+    </div>
+
+    <h3>Step 5 — Adding a New Exercise to Days 4–45 (Shared Blocks)</h3>
+    <p>Days 4 through 45 use shared exercise blocks at the top of the file called <span class="inline-code">sharedExercises</span>. To add an exercise that appears on ALL those days, edit the <span class="inline-code">sharedExercises</span> block near the top of the file following the same format.</p>
+
+    <div class="callout danger">
+      <p><strong>⚠️ Important:</strong> Editing <span class="inline-code">sharedExercises</span> changes ALL days from 4 to 45 at once. If you only want to change one specific day, you need to give that day its own block (like day1, day2, day3). Ask the developer if you need help with this.</p>
+    </div>
+
+    <h3>Step 6 — Saving and Deploying</h3>
+    <ol class="step-list">
+      <li><span>After making your changes in the GitHub editor, scroll down to the bottom of the page.</span></li>
+      <li><span>You will see a section called <strong>"Commit changes"</strong>.</span></li>
+      <li><span>In the first text box, write a short description of what you changed. For example: <em>"Added box jump to Day 2 main block"</em></span></li>
+      <li><span>Leave the option as <strong>"Commit directly to the master branch"</strong>.</span></li>
+      <li><span>Click the green <strong>"Commit changes"</strong> button.</span></li>
+      <li><span>Vercel (the hosting service) will automatically detect the change and redeploy the app. This takes <strong>1–2 minutes</strong>.</span></li>
+      <li><span>After 2 minutes, refresh <strong>smash-camp.vercel.app</strong> and open the session for that day — your new exercise will appear.</span></li>
+    </ol>
+
+    <div class="callout green">
+      <p><strong>✅ No technical knowledge required.</strong> As long as you copy the format exactly (curly braces, commas, quotes), the change will work. If you make a mistake, the app will simply not deploy and the old version stays live — nothing breaks permanently.</p>
+    </div>
+
+    <h3>Quick Reference — YouTube URL Format</h3>
+    <p>To add a YouTube search link for any exercise, use this URL format:</p>
+    <div class="code-block">
+      <pre>https://www.youtube.com/results?search_query=<span class="value">exercise+name+here</span>
+
+<span class="comment">Examples:</span>
+https://www.youtube.com/results?search_query=box+jump+tutorial
+https://www.youtube.com/results?search_query=badminton+footwork+drill
+https://www.youtube.com/results?search_query=lateral+lunge+exercise</pre>
+    </div>
+    <p>Replace spaces in the exercise name with <strong>+</strong> signs.</p>
+  </section>
+
+  <!-- SECTION 10 -->
+  <section>
+    <div class="section-header">
+      <div class="section-number">10</div>
+      <h2>Understanding the Database (Supabase)</h2>
+    </div>
+
+    <p>All player data is stored in <strong>Supabase</strong> — a cloud database. You rarely need to access it directly, but here's what's stored and where.</p>
+
+    <h3>Database Tables</h3>
+    <table class="data-table">
+      <thead><tr><th>Table Name</th><th>What It Stores</th></tr></thead>
+      <tbody>
+        <tr><td><strong>players</strong></td><td>Every registered user — name, email, and whether they are a coach (is_coach = true/false)</td></tr>
+        <tr><td><strong>attendance</strong></td><td>One row per player per day they marked present. Contains player_id, date, present=true</td></tr>
+        <tr><td><strong>exercise_completions</strong></td><td>Each exercise a player marks as done — player_id, day_number, exercise_name, completed, date</td></tr>
+        <tr><td><strong>daily_sessions</strong></td><td>Summary per session — player_id, day_number, date, completion_percent</td></tr>
+        <tr><td><strong>nutrition_logs</strong></td><td>Meals and hydration logged per player per day</td></tr>
+      </tbody>
+    </table>
+
+    <h3>How to Access Supabase (if needed)</h3>
+    <ol class="step-list">
+      <li><span>Go to <strong>supabase.com</strong> and log in with the project owner's account.</span></li>
+      <li><span>Open the <strong>smash-camp</strong> project.</span></li>
+      <li><span>Go to <strong>Table Editor</strong> in the left sidebar to view and edit data directly.</span></li>
+      <li><span>Go to <strong>Authentication → Users</strong> to see all registered users and manage accounts.</span></li>
+    </ol>
+
+    <div class="callout danger">
+      <p><strong>⚠️ Be careful:</strong> Deleting rows in Supabase is permanent. Only delete data if you are certain. Always double-check before clicking Delete in the database.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 11 -->
+  <section>
+    <div class="section-header">
+      <div class="section-number">11</div>
+      <h2>Troubleshooting Common Issues</h2>
+    </div>
+
+    <h3>Player Can't Log In</h3>
+    <ol class="step-list">
+      <li><span>Ask them to check they are using the correct email and password.</span></li>
+      <li><span>If they forgot their password, go to <strong>Supabase → Authentication → Users</strong>, find their email, click the three dots → <strong>Send password reset</strong>.</span></li>
+      <li><span>If their account is unconfirmed (unlikely with current settings), go to Authentication → Users → find them → click three dots → <strong>Confirm user</strong>.</span></li>
+    </ol>
+
+    <h3>Player Forgot to Mark Attendance</h3>
+    <ol class="step-list">
+      <li><span>Ask the player to open the app <strong>on the same day</strong> and tap "I'm Here" — they can do it any time before midnight.</span></li>
+      <li><span>If the day has passed, you can manually insert an attendance record in Supabase: go to <strong>Table Editor → attendance</strong> → click <strong>Insert row</strong> → enter player_id (from the players table), date (format: YYYY-MM-DD), present = true.</span></li>
+    </ol>
+
+    <h3>App Not Updating After Code Change</h3>
+    <ol class="step-list">
+      <li><span>Wait 2–3 minutes after committing to GitHub.</span></li>
+      <li><span>Hard-refresh the browser: on mobile, close the tab completely and reopen.</span></li>
+      <li><span>Check Vercel deployment status at <strong>vercel.com</strong> — look for any failed deployments shown in red.</span></li>
+    </ol>
+
+    <h3>New Player Not Appearing in Squad/Dashboard</h3>
+    <p>Players appear immediately after they sign up. Refresh the page (pull down to refresh on mobile) and they should appear. If not, check Supabase → Authentication → Users to confirm their account exists.</p>
+
+    <h3>Scores Showing as 0 for a Player</h3>
+    <p>This means the player has either not marked attendance or not completed any exercises. Their score will only update after they actively use the app. Remind them to mark attendance daily and complete exercises through the session page.</p>
+  </section>
+
+</div>
+
+<footer>
+  <strong>SMASH CAMP</strong> · Coach Manual · Confidential<br />
+  App: smash-camp.vercel.app · Coach Code: SMASHCOACH2025 · GitHub: github.com/akhtar07/smash-camp
+</footer>
+
+</body>
+</html>
