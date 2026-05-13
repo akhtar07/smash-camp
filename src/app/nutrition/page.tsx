@@ -2,16 +2,15 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import TopBar from '@/components/TopBar';
 import BottomNav from '@/components/BottomNav';
 
 const MEALS = [
-  { time: '05:15 AM', meal: 'Pre-workout', foods: 'Banana + oats + coffee', tip: 'Never train dehydrated. Eat 90 mins before court.' },
-  { time: '08:15 AM', meal: 'Recovery Meal', foods: 'Eggs / paneer + rice', tip: 'Consume protein within 30 min of session end.' },
-  { time: '11:00 AM', meal: 'Snack', foods: 'Greek yogurt + nuts', tip: 'Avoid junk sugar — keep energy stable.' },
-  { time: '01:30 PM', meal: 'Lunch', foods: 'Rice + dal + chicken / paneer', tip: 'Add colorful vegetables every day.' },
-  { time: '05:00 PM', meal: 'Evening Snack', foods: 'Smoothie + fruit', tip: 'Add omega-3 sources for recovery.' },
-  { time: '08:00 PM', meal: 'Dinner', foods: 'Chapati + protein + salad', tip: 'Light dinner improves sleep quality.' },
+  { time: '05:15 AM', meal: 'Pre-workout', foods: 'Banana + oats + coffee', tip: 'Never train dehydrated. Eat 90 mins before court.', icon: 'alarm', color: '#ffb77c' },
+  { time: '08:15 AM', meal: 'Recovery Meal', foods: 'Eggs / paneer + rice', tip: 'Consume protein within 30 min of session end.', icon: 'restaurant', color: '#68dba9' },
+  { time: '11:00 AM', meal: 'Snack', foods: 'Greek yogurt + nuts', tip: 'Avoid junk sugar — keep energy stable.', icon: 'nutrition', color: '#adc6ff' },
+  { time: '01:30 PM', meal: 'Lunch', foods: 'Rice + dal + chicken / paneer', tip: 'Add colorful vegetables every day.', icon: 'lunch_dining', color: '#68dba9' },
+  { time: '05:00 PM', meal: 'Evening Snack', foods: 'Smoothie + fruit', tip: 'Add omega-3 sources for recovery.', icon: 'local_cafe', color: '#d4a8ff' },
+  { time: '08:00 PM', meal: 'Dinner', foods: 'Chapati + protein + salad', tip: 'Light dinner improves sleep quality.', icon: 'dinner_dining', color: '#adc6ff' },
 ];
 
 const HYDRATION_GOAL = 3000;
@@ -26,6 +25,7 @@ export default function NutritionPage() {
   const [loading, setLoading] = useState(true);
   const [logging, setLogging] = useState<string | null>(null);
   const today = new Date().toISOString().split('T')[0];
+  const dateStr = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
   useEffect(() => {
     async function load() {
@@ -40,7 +40,7 @@ export default function NutritionPage() {
         .select('meal_name, hydration_ml').eq('player_id', auth.user.id).eq('date', today);
 
       if (logs) {
-        const meals = new Set(logs.filter(l => l.meal_name).map(l => l.meal_name as string));
+        const meals = new Set(logs.filter(l => l.meal_name && l.meal_name !== '__hydration__').map(l => l.meal_name as string));
         setLoggedMeals(meals);
         const totalHydration = logs.reduce((sum, l) => sum + (l.hydration_ml || 0), 0);
         setHydration(totalHydration);
@@ -60,17 +60,17 @@ export default function NutritionPage() {
 
   async function addHydration() {
     if (!userId) return;
-    const newVal = hydration + HYDRATION_STEP;
+    const newVal = Math.min(hydration + HYDRATION_STEP, HYDRATION_GOAL);
     setHydration(newVal);
     await supabase.from('nutrition_logs').upsert({ player_id: userId, date: today, meal_name: '__hydration__', hydration_ml: newVal }, { onConflict: 'player_id,date,meal_name' });
   }
 
   const mealsLogged = loggedMeals.size;
   const hydrationPct = Math.min((hydration / HYDRATION_GOAL) * 100, 100);
-  const circumference = 2 * Math.PI * 40;
-  const mealCircleOffset = circumference - (circumference * (mealsLogged / MEALS.length));
-
-  const dateStr = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+  const circumference = 2 * Math.PI * 38;
+  const mealOffset = circumference - (circumference * (mealsLogged / MEALS.length));
+  const allDone = mealsLogged === MEALS.length;
+  const hydrationDone = hydration >= HYDRATION_GOAL;
 
   if (loading) return (
     <div style={{ minHeight: '100vh', background: '#0f1511', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -81,118 +81,179 @@ export default function NutritionPage() {
   return (
     <div style={{ background: '#0f1511', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <div style={{ width: '100%', maxWidth: '448px' }}>
-        <TopBar />
-        <main style={{ padding: '16px 20px 100px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
-          {/* Header */}
+        {/* Header */}
+        <header style={{
+          position: 'sticky', top: 0, zIndex: 50,
+          background: 'rgba(15,21,17,0.95)', backdropFilter: 'blur(12px)',
+          borderBottom: '1px solid #3d4a42',
+          padding: '0 20px', height: '56px',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span className="material-symbols-outlined" style={{ color: '#68dba9', fontSize: '20px', fontVariationSettings: "'FILL' 1" }}>restaurant</span>
+            <span style={{ fontSize: '14px', fontFamily: 'Geist, sans-serif', fontWeight: 700, color: '#dee4de' }}>Nutrition</span>
+          </div>
+          <button
+            onClick={async () => { await supabase.auth.signOut(); router.push('/'); }}
+            style={{ background: 'none', border: 'none', color: '#87948b', cursor: 'pointer' }}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>logout</span>
+          </button>
+        </header>
+
+        <main style={{ padding: '20px 20px 100px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+
+          {/* Hero */}
           <div>
-            <h1 style={{ fontSize: '24px', fontFamily: 'Geist, sans-serif', fontWeight: 600, color: '#dee4de', letterSpacing: '-0.02em' }}>Nutrition Tracker</h1>
-            <p style={{ fontSize: '14px', color: '#bccac0', marginTop: '4px' }}>{dateStr} • Heavy Session Day</p>
+            <p style={{ fontSize: '13px', color: '#87948b', fontFamily: 'Geist, sans-serif' }}>{dateStr}</p>
+            <h1 style={{ fontSize: '26px', fontFamily: 'Geist, sans-serif', fontWeight: 800, color: '#dee4de', lineHeight: 1.1, letterSpacing: '-0.02em', marginTop: '2px' }}>
+              {allDone ? 'Perfect day! 🎉' : `${MEALS.length - mealsLogged} meals to go`}
+            </h1>
+            <p style={{ fontSize: '13px', color: '#87948b', marginTop: '4px' }}>Fuel your performance · {mealsLogged}/{MEALS.length} logged</p>
           </div>
 
-          {/* Progress Bento */}
+          {/* Progress bento */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-            {/* Meals circle */}
-            <div style={{ background: '#1b211d', border: '1px solid #3d4a42', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', position: 'relative', overflow: 'hidden' }}>
-              <div style={{ position: 'absolute', inset: 0, background: 'rgba(104,219,169,0.03)' }} />
-              <div style={{ position: 'relative', width: '80px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg width="80" height="80" viewBox="0 0 100 100" style={{ transform: 'rotate(-90deg)' }}>
-                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="#303632" strokeWidth="8" />
-                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="#68dba9" strokeWidth="8"
-                    strokeDasharray={circumference} strokeDashoffset={mealCircleOffset}
+
+            {/* Meals ring */}
+            <div style={{ background: '#1b211d', border: `1px solid ${allDone ? 'rgba(104,219,169,0.3)' : '#3d4a42'}`, borderRadius: '16px', padding: '18px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', position: 'relative', overflow: 'hidden' }}>
+              {allDone && <div style={{ position: 'absolute', inset: 0, background: 'rgba(104,219,169,0.05)' }} />}
+              <div style={{ position: 'relative', width: '84px', height: '84px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg width="84" height="84" viewBox="0 0 84 84" style={{ transform: 'rotate(-90deg)', position: 'absolute' }}>
+                  <circle cx="42" cy="42" r="38" fill="transparent" stroke="#252b28" strokeWidth="7" />
+                  <circle cx="42" cy="42" r="38" fill="transparent" stroke={allDone ? '#68dba9' : '#68dba9'} strokeWidth="7"
+                    strokeDasharray={circumference} strokeDashoffset={mealOffset}
+                    strokeLinecap="round"
                     style={{ transition: 'stroke-dashoffset 0.5s ease' }} />
                 </svg>
-                <div style={{ position: 'absolute', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <span style={{ fontSize: '20px', fontFamily: 'Geist, sans-serif', fontWeight: 800, color: '#dee4de', lineHeight: 1 }}>{mealsLogged}</span>
-                  <span style={{ fontSize: '11px', color: '#bccac0' }}>/{MEALS.length}</span>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 1 }}>
+                  {allDone
+                    ? <span className="material-symbols-outlined" style={{ color: '#68dba9', fontSize: '28px', fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                    : <>
+                        <span style={{ fontSize: '22px', fontFamily: 'Geist, sans-serif', fontWeight: 800, color: '#dee4de', lineHeight: 1 }}>{mealsLogged}</span>
+                        <span style={{ fontSize: '11px', color: '#87948b' }}>/{MEALS.length}</span>
+                      </>
+                  }
                 </div>
               </div>
-              <span style={{ fontSize: '11px', fontFamily: 'Geist, sans-serif', fontWeight: 700, color: '#bccac0', textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'center' }}>Meals Logged</span>
+              <div style={{ textAlign: 'center' }}>
+                <p style={{ fontSize: '12px', fontFamily: 'Geist, sans-serif', fontWeight: 700, color: allDone ? '#68dba9' : '#bccac0', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  {allDone ? 'All Done!' : 'Meals'}
+                </p>
+              </div>
             </div>
 
             {/* Hydration */}
-            <div style={{ background: '#1b211d', border: '1px solid #3d4a42', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-              <div>
-                <span style={{ fontSize: '11px', fontFamily: 'Geist, sans-serif', fontWeight: 700, color: '#adc6ff', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <span className="material-symbols-outlined" style={{ fontSize: '14px', fontVariationSettings: "'FILL' 1" }}>water_drop</span>
-                  Hydration
-                </span>
-                <div style={{ fontSize: '28px', fontFamily: 'Geist, sans-serif', fontWeight: 800, color: '#dee4de', marginTop: '4px', lineHeight: 1 }}>
-                  {(hydration / 1000).toFixed(1)}<span style={{ fontSize: '16px', fontWeight: 600 }}>L</span>
+            <div style={{ background: '#1b211d', border: `1px solid ${hydrationDone ? 'rgba(173,198,255,0.3)' : '#3d4a42'}`, borderRadius: '16px', padding: '18px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', position: 'relative', overflow: 'hidden' }}>
+              {hydrationDone && <div style={{ position: 'absolute', inset: 0, background: 'rgba(173,198,255,0.04)' }} />}
+              <div style={{ position: 'relative' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '8px' }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: '16px', color: '#adc6ff', fontVariationSettings: "'FILL' 1" }}>water_drop</span>
+                  <span style={{ fontSize: '11px', fontFamily: 'Geist, sans-serif', fontWeight: 700, color: '#adc6ff', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Hydration</span>
                 </div>
-                <p style={{ fontSize: '12px', color: '#bccac0', marginTop: '2px' }}>of {HYDRATION_GOAL / 1000}L goal</p>
-                <div style={{ height: '4px', background: '#303632', borderRadius: '100px', overflow: 'hidden', marginTop: '8px' }}>
-                  <div style={{ height: '100%', background: '#adc6ff', borderRadius: '100px', width: `${hydrationPct}%`, transition: 'width 0.3s' }} />
+                <p style={{ fontSize: '28px', fontFamily: 'Geist, sans-serif', fontWeight: 800, color: hydrationDone ? '#adc6ff' : '#dee4de', lineHeight: 1 }}>
+                  {(hydration / 1000).toFixed(1)}<span style={{ fontSize: '15px', fontWeight: 600, color: '#87948b' }}>L</span>
+                </p>
+                <p style={{ fontSize: '11px', color: '#87948b', marginTop: '2px' }}>of {HYDRATION_GOAL / 1000}L goal</p>
+
+                {/* Water fill visual */}
+                <div style={{ height: '6px', background: '#252b28', borderRadius: '100px', overflow: 'hidden', marginTop: '10px' }}>
+                  <div style={{ height: '100%', background: '#adc6ff', borderRadius: '100px', width: `${hydrationPct}%`, transition: 'width 0.4s ease' }} />
                 </div>
               </div>
-              <button onClick={addHydration} style={{
-                marginTop: '10px', width: '100%', background: '#0566d9', color: '#e6ecff',
-                border: 'none', borderRadius: '8px', padding: '8px',
-                fontSize: '11px', fontFamily: 'Geist, sans-serif', fontWeight: 700,
-                textTransform: 'uppercase', letterSpacing: '0.05em', cursor: 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px',
-              }}>
-                <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>add</span>
-                250ml
+              <button
+                onClick={addHydration}
+                disabled={hydrationDone}
+                style={{
+                  marginTop: '12px', width: '100%',
+                  background: hydrationDone ? 'rgba(173,198,255,0.1)' : '#adc6ff',
+                  color: hydrationDone ? '#adc6ff' : '#001a4d',
+                  border: hydrationDone ? '1px solid rgba(173,198,255,0.3)' : 'none',
+                  borderRadius: '8px', padding: '9px',
+                  fontSize: '11px', fontFamily: 'Geist, sans-serif', fontWeight: 700,
+                  textTransform: 'uppercase', letterSpacing: '0.05em',
+                  cursor: hydrationDone ? 'default' : 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px',
+                }}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '15px' }}>{hydrationDone ? 'check' : 'add'}</span>
+                {hydrationDone ? 'Goal reached!' : '+250ml'}
               </button>
             </div>
           </div>
 
-          {/* Meals List */}
+          {/* Meals list */}
           <div>
-            <h2 style={{ fontSize: '20px', fontFamily: 'Geist, sans-serif', fontWeight: 600, color: '#dee4de', marginBottom: '16px', borderBottom: '1px solid #3d4a42', paddingBottom: '8px' }}>
-              Today&apos;s Protocol
-            </h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <p style={{ fontSize: '11px', fontFamily: 'Geist, sans-serif', fontWeight: 700, color: '#87948b', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '12px' }}>Today&apos;s Protocol</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {MEALS.map(m => {
                 const done = loggedMeals.has(m.meal);
                 const isLogging = logging === m.meal;
+
                 return (
                   <div key={m.meal} style={{
-                    background: '#1b211d', border: `1px solid ${done ? 'rgba(104,219,169,0.3)' : '#3d4a42'}`,
-                    borderRadius: '12px', padding: '16px',
-                    display: 'flex', gap: '16px', alignItems: 'flex-start',
-                    position: 'relative', overflow: 'hidden',
+                    background: done ? 'rgba(104,219,169,0.04)' : '#1b211d',
+                    border: `1px solid ${done ? 'rgba(104,219,169,0.2)' : '#3d4a42'}`,
+                    borderRadius: '14px', overflow: 'hidden',
+                    transition: 'all 0.3s ease',
                   }}>
-                    {done && <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '3px', background: '#68dba9' }} />}
-                    <div style={{ flexShrink: 0, marginTop: '2px' }}>
-                      {done
-                        ? <span className="material-symbols-outlined" style={{ color: '#68dba9', fontSize: '22px', fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                        : <div style={{ width: '22px', height: '22px', borderRadius: '50%', border: '2px solid #3d4a42' }} />
-                      }
-                    </div>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                        <h3 style={{ fontSize: '16px', fontFamily: 'Geist, sans-serif', fontWeight: 600, color: '#dee4de' }}>{m.meal}</h3>
-                        <span style={{ fontSize: '11px', fontFamily: 'Geist, sans-serif', fontWeight: 700, color: done ? '#68dba9' : '#bccac0', background: done ? 'rgba(104,219,169,0.1)' : '#252b28', padding: '2px 8px', borderRadius: '4px' }}>{m.time}</span>
+                    {/* Top accent */}
+                    {done && <div style={{ height: '2px', background: '#68dba9' }} />}
+
+                    <div style={{ padding: '14px 16px', display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
+                      {/* Icon */}
+                      <div style={{
+                        width: '40px', height: '40px', borderRadius: '10px', flexShrink: 0,
+                        background: done ? 'rgba(104,219,169,0.12)' : `rgba(${m.color === '#ffb77c' ? '255,183,124' : m.color === '#68dba9' ? '104,219,169' : m.color === '#adc6ff' ? '173,198,255' : m.color === '#d4a8ff' ? '212,168,255' : '104,219,169'}, 0.1)`,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      }}>
+                        {done
+                          ? <span className="material-symbols-outlined" style={{ color: '#68dba9', fontSize: '20px', fontVariationSettings: "'FILL' 1" }}>check</span>
+                          : <span className="material-symbols-outlined" style={{ color: m.color, fontSize: '20px', fontVariationSettings: "'FILL' 1" }}>{m.icon}</span>
+                        }
                       </div>
-                      <p style={{ fontSize: '14px', color: '#bccac0', marginBottom: done ? '0' : '8px' }}>{m.foods}</p>
-                      {!done && (
-                        <>
-                          <div style={{ background: '#0f1511', padding: '8px', borderRadius: '6px', border: '1px solid #252b28', marginBottom: '12px', display: 'flex', alignItems: 'flex-start', gap: '6px' }}>
-                            <span className="material-symbols-outlined" style={{ color: '#dd706b', fontSize: '14px', marginTop: '1px' }}>bolt</span>
-                            <p style={{ fontSize: '12px', color: '#bccac0', fontStyle: 'italic' }}>{m.tip}</p>
-                          </div>
-                          <button onClick={() => logMeal(m.meal)} disabled={!!logging} style={{
-                            width: '100%', background: '#68dba9', color: '#002114',
-                            border: 'none', borderRadius: '8px', padding: '12px',
-                            fontSize: '11px', fontFamily: 'Geist, sans-serif', fontWeight: 700,
-                            textTransform: 'uppercase', letterSpacing: '0.05em',
-                            cursor: logging ? 'not-allowed' : 'pointer',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
-                            opacity: isLogging ? 0.7 : 1,
-                          }}>
-                            <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>add_task</span>
-                            {isLogging ? 'Logging...' : 'Log Meal'}
-                          </button>
-                        </>
-                      )}
+
+                      {/* Content */}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                          <h3 style={{ fontSize: '15px', fontFamily: 'Geist, sans-serif', fontWeight: 600, color: done ? '#68dba9' : '#dee4de' }}>{m.meal}</h3>
+                          <span style={{ fontSize: '11px', fontFamily: 'Geist, sans-serif', fontWeight: 700, color: '#87948b', background: '#252b28', padding: '2px 8px', borderRadius: '4px', flexShrink: 0 }}>{m.time}</span>
+                        </div>
+                        <p style={{ fontSize: '13px', color: '#87948b', marginBottom: done ? 0 : '10px' }}>{m.foods}</p>
+
+                        {!done && (
+                          <>
+                            <div style={{ background: '#0f1511', borderRadius: '8px', padding: '8px 10px', marginBottom: '10px', display: 'flex', gap: '6px', alignItems: 'flex-start' }}>
+                              <span className="material-symbols-outlined" style={{ color: '#ffb77c', fontSize: '14px', marginTop: '1px', flexShrink: 0 }}>bolt</span>
+                              <p style={{ fontSize: '12px', color: '#87948b', fontStyle: 'italic', lineHeight: 1.4 }}>{m.tip}</p>
+                            </div>
+                            <button
+                              onClick={() => logMeal(m.meal)}
+                              disabled={!!logging}
+                              style={{
+                                width: '100%', background: '#68dba9', color: '#002114',
+                                border: 'none', borderRadius: '8px', padding: '11px',
+                                fontSize: '11px', fontFamily: 'Geist, sans-serif', fontWeight: 700,
+                                textTransform: 'uppercase', letterSpacing: '0.05em',
+                                cursor: logging ? 'not-allowed' : 'pointer',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+                                opacity: isLogging ? 0.7 : 1, transition: 'opacity 0.2s',
+                              }}
+                            >
+                              <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>add_task</span>
+                              {isLogging ? 'Logging...' : 'Log Meal'}
+                            </button>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
                 );
               })}
             </div>
           </div>
+
         </main>
         <BottomNav role={isCoach ? 'coach' : 'player'} />
       </div>

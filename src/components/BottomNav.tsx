@@ -13,8 +13,8 @@ const coachNav: NavItem[] = [
 const playerNav: NavItem[] = [
   { label: 'Dashboard', icon: 'dashboard', path: '/player' },
   { label: 'Program', icon: 'fitness_center', path: '/program' },
-  { label: 'Squad', icon: 'group', path: '/squad' },
   { label: 'Nutrition', icon: 'restaurant', path: '/nutrition' },
+  { label: 'Scores', icon: 'leaderboard', path: '/leaderboard' },
 ];
 
 export default function BottomNav({ role = 'player' }: { role?: 'coach' | 'player' }) {
